@@ -88,6 +88,7 @@ def format_sparql_string(string):
     string = string.replace('?', '\\\\?')
     string = string.replace('$', '\\\\$')
     string = string.replace('^', '\\\\^')
+    string = string.replace('*', '\\\\*')
     return string
 
 

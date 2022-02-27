@@ -20,7 +20,7 @@ MAX_ALBUMS = 100
 MAX_ARTISTS = 100
 
 # ATTENTION! Setting this true will slow down the sparql queries!
-GET_FULL_INFO = False
+GET_FULL_INFO = True
 
 VERBOSE = True
 
