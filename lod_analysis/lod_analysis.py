@@ -2,7 +2,7 @@ from utils.download import Download
 from utils.evaluate import *
 
 # Set the follow variables to execute specific actions only
-ALLOW_DOWNLOAD = True
+ALLOW_DOWNLOAD = False
 ALLOW_EVALUATE = True
 
 # Set the playlist ID from which download data
