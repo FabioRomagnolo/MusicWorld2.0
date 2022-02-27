@@ -31,10 +31,12 @@ def simplify_research(query):
     query = re.sub(r'\((.*) edition\)', "", query)
     # Removing '(... deluxe ...)' pattern
     query = re.sub(r'\((.*?)deluxe(.*?)\)', "", query)
+    # Removing "Xth anniversary" pattern
+    query = re.sub(r'[0-9]*th anniversary(.*)', "", query)
     # Removing '(Live ...)' pattern
     query = re.sub(r'\((.*?)live(.*?)\)', "", query)
     query = re.sub(r'-(.*?)live(.*?)', "", query)
-    # Removing problematic words and chars
+    # Removing useless words and chars
     to_replace = ['"', ]
     for word in to_replace:
         query = query.replace(word, '')
@@ -43,6 +45,8 @@ def simplify_research(query):
     query = re.sub(r'\[(\s*)(-*?)\]', "", query)
     # Removing ' - ...' at the end of string
     query = re.sub(r'(\s*-+(.*?))$', "", query)
+    # Removing ': ' at the end of string
+    query = re.sub(r'(:+(\s?))$', "", query)
     # Removing final spaces
     query = "".join(query.rstrip())
     return query
