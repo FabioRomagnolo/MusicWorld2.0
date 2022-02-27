@@ -11,7 +11,7 @@ ALLOW_EVALUATE = True
 # PLAYLIST - Modern Heavy Metal & Hard Rock Hits (49xcNMhndryLZ2XYmTMLy9)
 # PLAYLIST - Top Rock Hits 00s 10s 20s (5Lwl3XaAOkEo4F9jXG1KK2)
 # PLAYLIST - Pop & Rock Hits 2020s - 2010s - 2000s - 90s - 80s (64P8IcIYuKeZuk1D9pDDAF)
-PLAYLIST_ID = "2oyJhb0BNwfDhI4Yrh4xp4"
+PLAYLIST_ID = "49xcNMhndryLZ2XYmTMLy9"
 
 # ATTENTION! This will determine the volume of analysis.
 # - To take all the artists, albums and tracks from playlist set these to None.

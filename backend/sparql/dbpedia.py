@@ -168,7 +168,7 @@ class Dbpedia(object):
                     searched = self.search(query)
                     if len(searched) == 0:
                         return None
-                    searched_album = searched[0]
+                searched_album = searched[0]
             if not searched_album:
                 return None
 
