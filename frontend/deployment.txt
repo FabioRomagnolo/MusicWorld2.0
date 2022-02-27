@@ -1,0 +1,13 @@
+# GCP project creation
+
+gcloud projects create musicworld --set-as-default
+
+
+# Frontend deployment
+
+gcloud app deploy --version v1
+
+
+# Adding routing rules
+
+gcloud app deploy dispatch.yaml

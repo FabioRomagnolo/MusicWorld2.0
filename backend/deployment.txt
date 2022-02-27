@@ -1,0 +1,11 @@
+# Cloud Endpoints deployment
+
+gcloud endpoints services deploy musicworld_swagger2.yaml --validate-only
+gcloud endpoints services deploy musicworld_swagger2.yaml
+
+
+# Backend deployment
+
+gcloud app deploy flexenv.yaml --version v1
+
+

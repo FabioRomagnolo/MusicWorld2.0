@@ -1,0 +1,261 @@
+/* Common CSS for details pages about errors, users, artists, albums and tracks */
+
+/* Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+    .container {max-width: 85%;}
+}
+
+.details {
+    padding-top: 35px;
+}
+
+.details p {
+    color: #8b8e93 !important;
+    font-weight: 300;
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 26px;
+}
+
+.minor-link {
+    color: #8b8e93;
+    font-weight: 300;
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 26px;
+}
+
+.details .img-container {
+    margin-top: 10px;
+    display: flex;
+}
+
+.details .favorite-tracks-table {
+    margin-top: 15px;
+}
+
+.details .designation {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.details .designation h2 {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+.details .designation h6 {
+    margin-top: 5px;
+}
+.details .designation span {
+    font-style: italic;
+    font-size: 24px;
+}
+
+.popularity {
+    display: flex;
+}
+.popularity-bar {
+    width: 50%;
+    height: 24px;
+    /*margin-top: 4px;*/
+    margin-top: 0.25rem;
+}
+.popularity-bar h6 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+.progress-bar-color {background-color: #1287C3;}
+
+.details .description{
+    padding-top: 20px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.details .description h4 {
+    margin-top: 40px
+}
+.details .description h3 {
+    color: #8b8e93;
+}
+.details .description li {
+    color: #8b8e93;
+}
+.details .description p {
+    margin-bottom: 15px;
+    font-weight: 400;
+    font-size: 15px;
+}
+.details .description h6 {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.details .table-contents {
+    margin-top: 15px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.description-content {
+    position: relative;
+    height: auto;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 10px;
+    max-height: 10vh;
+    overflow: hidden;
+    -webkit-mask-image: -webkit-gradient(linear, left 50%, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)))
+    /*-webkit-mask-image: none;*/
+}
+.description-content.expand {
+    max-height: 100vh;
+    /*max-height: 45vh;*/
+    -webkit-mask-image: none;
+}
+
+.btn-show-more-description {
+    background-color: #1287C3;
+}
+.btn-show-more-links {
+    /*background-color: black;*/
+    background-color: #1287C3;
+}
+.btn-show-more-news {
+    background-color: #1287C3;
+}
+
+.spotify-embed{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border: 0;
+}
+
+.settings-container .active {
+    background-color: #1287C3;
+}
+
+/*.youtube-container {margin-top: 30px;}*/
+.youtube-container .active {
+    background-color: darkred;
+}
+
+/*.news-container {margin-top: 30px;}*/
+.news-container .active {
+    background-color: #1287C3;
+}
+.news-date {
+    width: 20%;
+    font-weight: 500;
+    margin-left: 15px;
+}
+.news-title {
+    width: 80%;
+}
+
+/*.links-container {margin-top: 30px;}*/
+.links-container .active {
+    /*background-color: black;*/
+    background-color: #1287C3;
+}
+.links-description {
+    font-weight: 500;
+}
+.links-image-container {
+    width: 20%;
+}
+.links-image {
+    width: 100%;
+    height: auto;
+}
+
+small {
+    color: #8b8e93;
+    font-weight: 300;
+    margin-bottom: 0;
+    font-size: 12px;
+    line-height: 26px;
+}
+
+.lyrics p {
+    color: dimgrey !important;
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+    font-size: 22px !important;
+    font-weight: 350 !important;
+    line-height: 36px !important;
+}
+
+.sparql-content p {
+    margin-bottom: 10px !important;
+}
+
+/* OpenStreetMap custom CSS for infobox */
+.map {
+    min-height: 35vh !important;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.map_infobox {
+    margin-left: 10px;
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.map_infobox h4 {
+    margin: 0 0 5px !important;
+    color: #8b8e93 !important;
+}
+.map_infobox p {
+    margin: 0 0 5px !important;
+}
+/* End of OpenStreetMap custom CSS for infobox */
+
+/* LOD and Genius annotations headers custom CSS for infobox */
+.annotations-header {
+    background-color: transparent !important;
+    display: flex !important;
+    align-items: center;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+.annotations-header h5 {
+    color: dimgrey;
+    /*color: black;*/
+}
+.annotations-image {
+    max-height: 40px;
+    max-width: 100px;
+    /*margin-left: 15px;*/
+    margin-left: 0.9rem;
+}
+.push-right {
+    margin-left: auto !important;
+}
+.genius-colors {
+    border-color: yellow !important;
+    background-color: lightyellow !important;
+    color: dimgrey;
+}
+.lod-colors {
+    border-color: #1287C3 !important;
+    background-color: transparent !important;
+    color: dimgrey;
+}
+/* End of LOD and Genius annotations headers custom CSS for infobox */
+
+.loading-message {
+    display: flex;
+    align-items: center;
+}
+.loading-message img {
+    margin-left: auto;
+    max-height: 100px;
+    width: auto;
+}
+.loading-message p {
+    margin-right: auto;
+    margin-bottom: 0 !important;
+}

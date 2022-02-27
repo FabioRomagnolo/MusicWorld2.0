@@ -1,0 +1,392 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>{{ title }}</title>
+    <meta name="description" content="All about {{artist.name}} on Music World.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/common.css') }}">
+{% endblock %}
+
+
+{% block content %}
+    <div class="details">
+        <div class="row">
+            <!-- LEFT COLUMN -->
+            <div id="left-column" class="col-lg-4 col-md-12 col-sm-12">
+                <!-- IMAGE -->
+
+                {% block image %}
+                    <div id="image" class="container img-container">
+                        {% if artist.images %}
+                        <img class="img-full img-rounded shadow" src="{{artist.images[0].url}}">
+                        {% else %}
+                        <img class="img-full" src="{{ url_for('static', filename='images/default_artist.png') }}">
+                        {% endif %}
+                    </div> <br>
+                {% endblock %}
+
+                <!-- End of IMAGE -->
+
+                <!-- SPOTIFY, NEWS AND LINKS -->
+                <div id="spotify_embed">
+                    {% block spotify_embed %}
+                        <iframe class="spotify-embed shadow" src="https://open.spotify.com/embed/artist/{{artist.id}}"
+                                width="100%", height="350" allowtransparency="true" allow="encrypted-media"></iframe>
+                    {% endblock %}
+                </div>
+
+                <div id="video">
+                    {% block video %}
+                        <!-- YouTube music video -->
+                    {% endblock %}
+                </div>
+
+                <div id="news">
+                    {% if news %}
+                        <div class="news-container shadow">
+                                <div class="list-group">
+                                    <div class="list-group-item list-group-item-action d-flex w-100 justify-content-between active">
+                                        {% block news_title %}
+                                            <h5 class="mb-1">Latest {{news|length}} news about "{{artist.name}}"</h5>
+                                        {% endblock %}
+                                    </div>
+                                </div>
+                                <div class="list-group table-scrollable scrollbar-style">
+                                    {% for n in news %}
+                                        <a href="{{n.url}}" target="_blank" class="news-row list-group-item list-group-item-action flex-column align-items-start">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1 news-title">{{n.title}}</h5>
+                                                <small class="mb-1 news-date">Published on {{n.publishedAt | strftime('news_utc', '%B %m, %Y')}} by {{n.source.name}}</small>
+                                            </div>
+                                            <p class="mb-1">{{n.description}}</p>
+                                            <p class="mb-1">{{n.content}}</p>
+                                        </a>
+                                    {% endfor %}
+                                    <!-- Show more button row -->
+                                    <button type="button" class="btn-show-more btn-show-more-news btn btn-primary btn-md">
+                                        <!--<i class="fas fa-chevron-down"></i>&emsp;&emsp;-->
+                                        Show more news
+                                    </button>
+                                    <script>
+                                        $('a.news-row:gt(0)').hide();
+                                        var news_visible = $('a.news-row:visible').length;
+                                        var news_hidden = $('a.news-row:hidden').length;
+                                        console.log("N. of news visible: "+news_visible)
+
+                                        $('button.btn-show-more-news').on('click', function() {
+                                            $('a.news-row:gt('+(news_visible-1)+')').slice(0,5).show();
+                                            news_visible = $('a.news-row:visible').length;
+                                            console.log("N. of news visible: "+news_visible);
+                                            news_hidden = $('a.news-row:hidden').length
+                                            console.log("N. of news hidden: "+news_hidden)
+                                            if (news_hidden === 0) {$('button.btn-show-more-news').hide();}
+                                        })
+                                        if (news_hidden === 0) {$('button.btn-show-more-news').hide();}
+                                    </script>
+                                </div>
+                            </div> <br>
+                    {% endif %}
+                </div>
+
+                <div id="links">
+                    {% if links %}
+                        <div class="links-container shadow">
+                            <div class="list-group">
+                                <div class="list-group-item list-group-item-action d-flex w-100 justify-content-between active">
+                                    {% block links_title %}
+                                        <h5 class="mb-1"><i class="fas fa-guitar"></i> Learn to play "{{artist.name}}"</h5>
+                                    {% endblock %}
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                {% for l in links %}
+                                    <a href="{{l.url}}" target="_blank" class="links-row list-group-item list-group-item-action flex-column align-items-start">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <div>
+                                                <h5 class="mb-1">{{l.title}}</h5>
+                                                <p class="mb-1 links-description">{{l.description}}</p>
+                                            </div>
+                                            <div class="links-image-container">
+                                                <img class="links-image rounded" src="{{ url_for('static', filename='images/sites/'+l.title+'.png') }}">
+                                            </div>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                                <!-- Show more button row -->
+                                <button type="button" class="btn-show-more btn-show-more-links btn btn-primary btn-md">
+                                    <!--<i class="fas fa-chevron-down"></i>&emsp;&emsp;-->
+                                    Show more links
+                                </button>
+                                <script>
+                                    $('a.links-row:gt(0)').hide();
+                                    var links_visible = $('a.links-row:visible').length;
+                                    var links_hidden = $('a.links-row:hidden').length;
+                                    console.log("N. of links visible: "+links_visible)
+
+                                    $('button.btn-show-more-links').on('click', function() {
+                                        $('a.links-row:gt('+(links_visible-1)+')').slice(0,5).show();
+                                        links_visible = $('a.links-row:visible').length;
+                                        console.log("N. of links visible: "+links_visible);
+                                        links_hidden = $('a.links-row:hidden').length
+                                        console.log("N. of links hidden: "+links_hidden)
+                                        if (links_hidden === 0) {$('button.btn-show-more-links').hide();}
+                                    })
+                                    if (links_hidden === 0) {$('button.btn-show-more-links').hide();}
+                                </script>
+                            </div>
+                        </div> <br>
+                    {% endif %}
+                </div>
+                <!-- End of SPOTIFY, NEWS AND LINKS -->
+            </div>
+            <!-- End of LEFT COLUMN -->
+
+            <!-- RIGHT COLUMN -->
+            <div id="right-column" class="col-lg-8 col-md-12 col-sm-12">
+                <!-- DESIGNATION AND DESCRIPTION -->
+                <div id="designation" class="designation">
+                    {% block designation %}
+                        <h2>{{artist.name}}</h2>
+                        {% if artist.popularity %}
+                            <div class="popularity">
+                                <div>
+                                    <h6>Popularity on <a href="{{artist.external_urls.spotify}}" target="_blank">Spotify</a>:&nbsp;</h6>
+                                </div>
+                                <div class="progress popularity-bar">
+                                    <div class="progress-bar progress-bar-color" role="progressbar" aria-valuenow="{{artist.popularity}}"
+                                         style="width:{{artist.popularity}}%; min-width: 60px"><h6>{{artist.popularity}}/100</h6></div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if artist.followers %}
+                            <h6>
+                                Followers: {{artist.followers.total|format}}
+                            </h6>
+                        {% endif %}
+                        {% if artist.genres %}
+                            <h6>Genre:
+                                {% for genre in artist.genres %}
+                                {{genre}}{% if not loop.last %}{{', '}}{% endif %}
+                                {% endfor %}
+                            </h6>
+                        {% endif %}
+                    {% endblock %}
+                </div>
+
+                <div id="description" class="description">
+                    {% if user %}
+                        <div id="dbpedia">
+                            <div id="dbpedia-loading" class="loading-message">
+                                <img src="{{ url_for('static', filename='animations/loading.gif') }}"/>
+                                <p>Loading Linked Open Data annotations ...</p>
+                            </div>
+                            <!-- sparql.html content here! -->
+                        </div>
+                        <!-- sparql.html download script -->
+                        <script type="text/javascript">
+                            $("#dbpedia-loading").show();
+                            $.ajax({
+                                url : window.location+"/sparql/",
+                                type : "GET",
+                                contentType: "application/json",
+                                success : function(data){
+                                    $("#dbpedia-loading").hide();
+                                    // Getting sparql.html rendered with data
+                                    $("#dbpedia").append(data)
+                                }
+                            });
+                        </script>
+
+                        <div id="genius">
+                            <div id="genius-loading" class="loading-message">
+                                <img src="{{ url_for('static', filename='animations/loading.gif') }}"/>
+                                <p>Loading Genius annotations and lyrics ...</p>
+                            </div>
+                            <!-- genius.html content here! -->
+                        </div>
+                        <!-- genius.html download script -->
+                        <script type="text/javascript">
+                            $("#genius-loading").show();
+                            $.ajax({
+                                url : window.location+"/genius/",
+                                type : "GET",
+                                contentType: "application/json",
+                                success : function(data){
+                                    $("#genius-loading").hide();
+                                    // Getting sparql.html rendered with data
+                                    $("#genius").append(data)
+                                }
+                            });
+                        </script>
+                    {% else %}
+                        <h6><a href="{{url_for('login')}}" target="_blank">Login</a>
+                            to find annotations and lyrics on Music World! &#128521;</h6>
+                    {% endif %}
+                </div> <br>
+                <!-- End of DESIGNATION AND DESCRIPTION -->
+
+                <!-- TABLE OF CONTENTS -->
+                {% block table_contents %}
+                    <div class="table-contents">
+                        <div class="row">
+                            {% if top_tracks %}
+                                <div class="col-lg-6 col-md-12 col-sm-12">
+                                    <table class="table table-hover shadow">
+                                        <thead class="thead shadow default-cursor">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Top 10 tracks</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for track in top_tracks %}
+                                        <tr class="top_tracks-row">
+                                            <th scope="row" class="default-cursor">{{loop.index}}</th>
+                                            <td>
+                                                <span>
+                                                    <a href="{{url_for('track', track_id=track.id)}}">{{track.name}}</a>
+                                                    <br>
+                                                    <p>
+                                                        {% for artist in track.artists %}
+                                                            <a href="{{url_for('artist', artist_id=artist.id)}}"
+                                                               target="_blank">{{artist.name}}{% if not loop.last %}{{', '}}{% endif %}</a>
+                                                        {% endfor %}
+                                                    </p>
+                                                    <p class="default-cursor">{{track.album.release_date | strftime(track.album.release_date_precision, '%Y')}}</p>
+                                                </span>
+                                                {% if favorite_tracks_ids is defined %}
+                                                    <button title="Add or remove track from your favorites" id="btn-fav-{{track.id}}" class="favorites-button">
+                                                        <i id="i-fav-{{track.id}}" class="star far fa-star"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </td>
+                                            <td class="td-image">
+                                                {% if track.album.images %}
+                                                <img class="img-max-full rounded float-right" src="{{track.album.images[0].url}}">
+                                                {% else %}
+                                                <img class="img-max-full rounded float-right" src="{{ url_for('static', filename='images/default_track.png') }}">
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+
+                                        <!-- Show more button row -->
+                                            <tr class="more-top_tracks-row">
+                                                <td colspan="3">
+                                                    <button type="button" class="btn-show-more btn-show-more-top_tracks btn btn-primary btn-md">
+                                                        <!--<i class="fas fa-chevron-down"></i>&emsp;&emsp;-->
+                                                        Show more tracks
+                                                    </button>
+                                                    <script>
+                                                        $('tr.top_tracks-row:gt(2)').hide();
+                                                        var top_tracks_visible = $('tr.top_tracks-row:visible').length;
+                                                        var top_tracks_hidden = $('tr.top_tracks-row:hidden').length;
+                                                        console.log("N. of top_tracks visible: "+top_tracks_visible)
+                                                        $('button.btn-show-more-top_tracks').on('click', function() {
+                                                            $('tr.top_tracks-row:gt('+(top_tracks_visible-1)+')').slice(0,7).show();
+                                                            top_tracks_visible = $('tr.top_tracks-row:visible').length;
+                                                            console.log("N. of top_tracks visible: "+top_tracks_visible);
+                                                            top_tracks_hidden = $('tr.top_tracks-row:hidden').length
+                                                            console.log("N. of top_tracks hidden: "+top_tracks_hidden)
+                                                            if (top_tracks_hidden === 0) {$('tr.more-top_tracks-row').hide();}
+                                                        })
+                                                        if (top_tracks_hidden === 0) {$('tr.more-top_tracks-row').hide();}
+                                                    </script>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+
+                            {% if albums %}
+                                <div class="col-lg-6 col-md-12 col-sm-12">
+                                    <table class="table table-scrollable-header">
+                                        <thead class="thead shadow default-cursor">
+                                            <tr><th>Discography</th></tr>
+                                        </thead>
+                                    </table>
+
+                                    <div class="table-scrollable scrollbar-style shadow">
+                                        <table class="table table-hover table-scrollable-body">
+                                            <tbody>
+                                                {% for album in albums %}
+                                                <tr class="albums-row">
+                                                    <th scope="row" class="default-cursor">{{loop.index}}</th>
+                                                    <td>
+                                                        <a href="{{url_for('album', album_id=album.id)}}">{{album.name}}</a>
+                                                        <br>
+                                                        <p>
+                                                        {% for artist in album.artists %}
+                                                            <a href="{{url_for('artist', artist_id=artist.id)}}" target="_blank">
+                                                                {% if loop.index > 2 %}...{% break %}{% endif %}
+                                                                {{artist.name}}{% if not loop.last %}{{', '}}{% endif %}
+                                                            </a>
+                                                        {% endfor %}
+                                                    </p>
+                                                        <p class="default-cursor">{{album.album_type | capitalize}}</p>
+                                                        <p class="default-cursor">{{album.release_date | strftime(album.release_date_precision, '%Y')}}</p>
+                                                    </td>
+                                                    <td class="td-image">
+                                                        {% if album.images %}
+                                                        <img class="img-max-full rounded float-right" src="{{album.images[0].url}}">
+                                                        {% else %}
+                                                        <img class="img-max-full rounded float-right" src="{{ url_for('static', filename='images/default_album.png') }}">
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endblock table_contents %}
+                <!-- End of TABLE OF CONTENTS -->
+            </div>
+            <!-- End of RIGHT COLUMN -->
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <!-- Script for alternative design on MOBILE DEVICES -->
+    <script>
+        function mobile_design() {
+            $("#spotify_embed").insertAfter("#description");
+            $("#news").insertAfter("#spotify_embed");
+            $("#video").insertAfter("#news");
+            $("#links").insertAfter("#video");
+
+            $(".img-full").css("width", "auto");
+            $(".img-full").css("height", "35vh")
+        }
+        function desktop_design() {
+            $("#spotify_embed").insertAfter("#image");
+            $("#news").insertAfter("#spotify_embed");
+            $("#video").insertAfter("#news");
+            $("#links").insertAfter("#video");
+
+            $(".img-full").css("width", "100%");
+            $(".img-full").css("height", "auto")
+        }
+        function control_size_and_design() {
+            if ($(window).width() < 992) {
+                mobile_design();
+            }
+            else {
+                desktop_design();
+          }
+        }
+
+        control_size_and_design();
+
+        /* On resizing control the design
+        $( window ).resize(function() {
+          control_size_and_design();
+        });*/
+    </script>
+    <!-- End of script for alternative design on MOBILE DEVICES
+{% endblock scripts %}

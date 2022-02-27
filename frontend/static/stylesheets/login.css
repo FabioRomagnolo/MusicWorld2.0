@@ -1,0 +1,51 @@
+.card-signin {
+  border: 0;
+  border-radius: 1rem;
+  box-shadow: 0 0 0.2rem 0 rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.card-signin .card-title {
+  margin-bottom: 2rem;
+  font-weight: 400;
+  font-size: 1.8rem;
+}
+
+.card-signin .card-subtitle {
+  font-weight: 300;
+  font-size: 1.5rem;
+}
+
+.card-signin .card-img-left {
+  width: 45%;
+  background: scroll center url('/static/images/MW_logos/1.png');
+  /* background: scroll center url('https://source.unsplash.com/WEQbe2jBg40/414x512'); */
+  background-size: cover;
+}
+
+.card-signin .card-body {
+  padding: 2rem;
+}
+
+.form-signin {
+  width: 100%;
+}
+
+.form-signin .btn {
+  font-size: 80%;
+  border-radius: 5rem;
+  letter-spacing: .1rem;
+  font-weight: bold;
+  padding: 1rem;
+  transition: all 0.2s;
+}
+
+.btn-google {
+  color: white;
+  background-color: #ea4335;
+}
+
+.btn-spotify {
+  color: white;
+  background-color: #1DB954;
+}

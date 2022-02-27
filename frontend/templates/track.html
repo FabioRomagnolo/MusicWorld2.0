@@ -1,0 +1,91 @@
+{% extends 'artist.html' %}
+
+{% block head %}
+    <title>{{ title }}</title>
+    <meta name="description" content="All about {{track.name}} on Music World.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/common.css') }}">
+{% endblock %}
+
+
+<!-- Left column -->
+{% block image %}
+    <div id="image" class="img-container">
+        {% if track.album.images %}
+            <img class="img-full shadow" src="{{track.album.images[0].url}}">
+        {% else %}
+            <img class="img-full" src="{{ url_for('static', filename='images/default_track.png') }}">
+        {% endif %}
+    </div> <br>
+{% endblock %}
+
+{% block spotify_embed %}
+    <iframe class="spotify-embed shadow" src="https://open.spotify.com/embed/track/{{track.id}}" width="100%", height="80" allowtransparency="true" allow="encrypted-media"></iframe>
+{% endblock spotify_embed %}
+
+{% block video %}
+    {% if video %}
+        <div class="youtube-container shadow">
+            <div class="list-group">
+                <div class="list-group-item list-group-item-action d-flex w-100 justify-content-between active">
+                    <h5 class="mb-1"><i class="fab fa-youtube"></i> Music video</h5>
+                </div>
+            </div>
+            <div class="list-group">
+                {% if user %}
+                    <div class="list-group-item embed-responsive embed-responsive-16by9">
+                        <iframe class="youtube-embed embed-responsive-item" src="https://www.youtube.com/embed/{{video}}?rel=0" allowfullscreen></iframe>
+                    </div>
+                {% else %}
+                    <div class="list-group-item">
+                        <h6><a href="{{url_for('login')}}">Login</a> to watch the official music video here! &#128521;</h6>
+                        <p>If you don't want to sign up on Music World, you can still watch the video <a href="https://www.youtube.com/watch?v={{video}}" target="_blank">here</a>.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div> <br>
+    {% endif %}
+{% endblock %}
+
+{% block news_title %}
+    <h5 class="mb-1">Latest {{news|length}} news about {{track.artists[0].name}}</h5>
+{% endblock %}
+
+{% block links_title %}
+    <h5 class="mb-1"><i class="fas fa-guitar"></i> Learn to play "{{track.name}}"</h5>
+{% endblock %}
+<!-- End of left column -->
+
+
+<!-- Contents -->
+{% block designation %}
+        <h2>{{track.name}}&ensp;
+            {% if favorite_tracks_ids is defined %}
+                <button title="Add or remove track from your favorites" id="btn-fav-{{track.id}}" class="favorites-button">
+                    <i id="i-fav-{{track.id}}" class="star far fa-star"></i>
+                </button>
+            {% endif %}
+        </h2>
+        <span>
+            {% for artist in track.artists %}
+                <a href="{{url_for('artist', artist_id=artist.id)}}">{{artist.name}}</a>{% if not loop.last %}{{', '}}{% endif %}
+            {% endfor %}
+        </span>
+        {% if track.popularity %}
+            <div class="popularity">
+                <div>
+                    <h6>Popularity on <a href="{{track.external_urls.spotify}}" target="_blank">Spotify</a>:&nbsp;</h6>
+                </div>
+                <div class="progress popularity-bar">
+                    <div class="progress-bar progress-bar-color" role="progressbar" aria-valuenow="{{track.popularity}}"
+                         style="width:{{track.popularity}}%; min-width: 60px"><h6>{{track.popularity}}/100</h6></div>
+                </div>
+            </div>
+        {% endif %}
+        <h6>
+            Album <a href="{{url_for('album', album_id=track.album.id)}}">{{track.album.name}}</a>
+            released on {{track.album.release_date | strftime(track.album.release_date_precision, '%B %m, %Y')}}
+        </h6>
+{% endblock %}
+<!-- End of contents -->
+
+{% block table_contents %}{% endblock %}

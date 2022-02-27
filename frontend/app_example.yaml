@@ -1,0 +1,16 @@
+runtime: python39
+service: default
+
+# Congifuring WSGI (Web Server Gateway Interface) HTTP Server Gunicorn for efficient Flask's responses
+entrypoint: gunicorn main:app
+
+env_variables:
+  BACKEND_BASEURL: https://musicworld-2021.appspot.com/api/v1            # IMPORTANT!
+  GOOGLE_OAUTH_CLIENT_ID: ...    					                     # IMPORTANT!
+  SPOTIFY_OAUTH_CLIENT_ID: ...                                           # IMPORTANT!
+  FLASK_SECRET_KEY: ...
+
+handlers:
+  - url: /.*
+    secure: always
+    script: auto

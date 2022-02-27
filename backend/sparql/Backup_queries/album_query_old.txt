@@ -1,0 +1,45 @@
+PREFIX : <http://dbpedia.org/resource/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+
+SELECT ?album ?album_name ?album_wiki ?released
+(GROUP_CONCAT(DISTINCT ?producer; SEPARATOR="\n") AS ?producers)
+(GROUP_CONCAT(DISTINCT ?writer; SEPARATOR="\n") AS ?writers) 
+(GROUP_CONCAT(DISTINCT ?award; SEPARATOR="\n") AS ?awards) 
+(GROUP_CONCAT(DISTINCT ?label; SEPARATOR="\n") AS ?labels) 
+(GROUP_CONCAT(DISTINCT ?genre; SEPARATOR="\n") AS ?genres) 
+(GROUP_CONCAT(DISTINCT ?related_artist; SEPARATOR="\n") AS ?related_artists) 
+
+?abstract 
+
+WHERE {
+  {?artist a dbo:Artist} UNION {?artist a dbo:Group} UNION {?artist a dbo:MusicalArtist}
+  ?artist foaf:name ?artist_name.
+
+  ?album a dbo:MusicalWork;
+               foaf:isPrimaryTopicOf ?album_wiki;
+               dbp:artist ?artist;
+               foaf:name ?album_name;
+               dbo:abstract ?abstract;
+
+  OPTIONAL {{?album dbo:genre ?genre} UNION {?album dbp:genre ?genre}}
+  OPTIONAL {?album dbp:released ?released}
+  OPTIONAL {{?album dbo:recordLabel ?label} UNION {?album dbo:label ?label}}
+  OPTIONAL {{?album dbo:award ?award} UNION {?album dbp:award ?award}}
+  OPTIONAL {{?album dbo:producer ?producer} UNION {?album dbp:producer ?producer}}
+  OPTIONAL {{?album dbo:composer ?composer} UNION {?album dbp:producer ?producer}}
+  OPTIONAL {{?album dbo:writer ?writer} UNION {?album dbp:writer ?writer}}
+  OPTIONAL {
+          {?artist dbo:associatedMusicalArtist ?related_artist} UNION {?artist dbo:associatedBand ?related_artist} UNION {?related_artist dbo:associatedMusicalArtist ?artist} UNION {?related_artist dbo:associatedBand ?artist}
+  }
+
+  FILTER(LANG(?abstract)='LANGUAGE')
+
+  FILTER NOT EXISTS {?album a dbo:Song}
+
+  FILTER(REGEX(str(?artist_name), "$ARTIST_NAME^", "i"))
+  FILTER(REGEX(str(?album_name), "ALBUM_NAME", "i"))
+}
+LIMIT 1

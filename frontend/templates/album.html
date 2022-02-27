@@ -1,0 +1,140 @@
+{% extends 'artist.html' %}
+
+{% block head %}
+    <title>{{ title }}</title>
+    <meta name="description" content="All about {{album.name}} on Music World.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/common.css') }}">
+{% endblock %}
+
+
+<!-- Left column -->
+{% block image %}
+    <div id="image" class="img-container">
+        {% if album.images %}
+            <img class="img-full shadow" src="{{album.images[0].url}}">
+        {% else %}
+            <img class="img-full" src="{{ url_for('static', filename='images/default_album.png') }}">
+        {% endif %}
+    </div> <br>
+{% endblock %}
+
+
+{% block spotify_embed %}
+    <iframe class="spotify-embed shadow" src="https://open.spotify.com/embed/album/{{album.id}}" width="100%", height="350" allowtransparency="true" allow="encrypted-media"></iframe>
+{% endblock %}
+
+
+{% block news_title %}
+    <h5 class="mb-1">Latest {{news|length}} news about {{album.artists[0].name}}</h5>
+{% endblock %}
+
+{% block links_title %}
+    <h5 class="mb-1"><i class="fas fa-guitar"></i> Learn to play "{{album.name}}"</h5>
+{% endblock %}}
+<!-- End of left column -->
+
+<!-- Contents -->
+{% block designation %}
+        <h2>{{album.name}}</h2>
+        <span>
+            {% for artist in album.artists %}
+                <a href="{{url_for('artist', artist_id=artist.id)}}">{{artist.name}}</a>{% if not loop.last %}{{', '}}{% endif %}
+            {% endfor %}
+        </span>
+        {% if album.popularity %}
+            <div class="popularity">
+                <div>
+                    <h6>Popularity on <a href="{{album.external_urls.spotify}}" target="_blank">Spotify</a>:&nbsp;</h6>
+                </div>
+                <div class="progress popularity-bar">
+                    <div class="progress-bar progress-bar-color" role="progressbar" aria-valuenow="{{album.popularity}}"
+                         style="width:{{album.popularity}}%; min-width: 60px"><h6>{{album.popularity}}/100</h6></div>
+                </div>
+            </div>
+        {% endif %}
+        <h6>Released on {{album.release_date | strftime(album.release_date_precision, '%B %m, %Y')}}</h6>
+        {% if album.genres %}
+            <h6>Genre: 
+                {% for genre in album.genres %}
+                    {{genre}}{% if not loop.last %}{{', '}}{% endif %}
+                {% endfor %}
+            </h6>
+        {% endif %}
+{% endblock %}
+
+<!-- Genius additional annotations -->
+{% block genius_specific %}
+        {% if genius_producers %}
+            <p><b>Produced by</b>
+                {% for producer in genius_producers %}
+                    <a href="{{producer.url}}" target="_blank">{{producer.name}}</a>{% if not loop.last %}{{', '}}{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+        {% if genius_writers %}
+            <p><b>Written by</b>
+                {% for writer in genius_writers %}
+                    <a href="{{writer.url}}" target="_blank">{{writer.name}}</a>{% if not loop.last %}{{', '}}{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+        {% if genius_labels %}
+            <p><b>Owned by</b>
+                {% for label in genius_labels %}
+                    <a href="{{label.url}}" target="_blank">{{label.name}}</a>{% if not loop.last %}{{', '}}{% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+{% endblock genius_specific %}
+<!-- End of Genius additional annotations -->
+
+
+<!-- Table of contents -->
+{% block table_contents %}
+    <div class="table-contents">
+        <div class="row">
+            {% if tracks %}
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <table class="table table-scrollable-header">
+                        <thead class="thead shadow default-cursor">
+                            <tr><th> Tracklist</th></tr>
+                        </thead>
+                    </table>
+                    <div class="table-scrollable scrollbar-style shadow">
+                        <table class="table table-hover table-scrollable-body">
+                            <tbody>
+                                {% for track in tracks %}
+                                    <tr class="tracks-row">
+                                        <th class="col-1" scope="row" class="default-cursor">{{loop.index}}</th>
+                                        <td class="col-9">
+                                            <span>
+                                                <a href="{{url_for('track', track_id=track.id)}}">{{track.name}}</a>
+                                                <br>
+                                                {% for artist in track.artists %}
+                                                    <a class="minor-link" href="{{url_for('artist', artist_id=artist.id)}}"
+                                                       target="_blank">{{artist.name}}{% if not loop.last %}{{', '}}{% endif %}</a>
+                                                {% endfor %}
+                                            </span>
+                                        </td>
+                                        <td class="col-1">
+                                            <p class="default-cursor">{{track.duration_ms | string | strftime('millisecond', '%M:%S')}}</p>
+                                        </td>
+                                        {% if favorite_tracks_ids is defined %}
+                                            <td>
+                                                <button title="Add or remove track from your favorites" id="btn-fav-{{track.id}}" class="favorites-button">
+                                                    <i id="i-fav-{{track.id}}" class="star far fa-star"></i>
+                                                </button>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+<!-- End of table of contents -->
+<!-- End of contents -->

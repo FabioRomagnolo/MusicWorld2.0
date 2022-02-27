@@ -1,0 +1,25 @@
+PREFIX : <http://dbpedia.org/resource/> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX dbo: <http://dbpedia.org/ontology/> 
+PREFIX dbp: <http://dbpedia.org/property/> 
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+
+SELECT ?track ?track_name ?artist ?artist_name ?wiki ?hometown ?abstract  
+
+WHERE {
+  {?artist a dbo:Artist} UNION {?artist a dbo:Group} UNION {?artist a dbo:MusicalArtist} UNION {?artist a dbo:Band}
+  {?artist foaf:name ?artist_name} UNION {?artist rdfs:label ?artist_name}
+
+  ?track a dbo:Song;
+         foaf:isPrimaryTopicOf ?wiki;
+         dbo:artist|dbp:artist ?artist;
+         dbo:abstract ?abstract.
+  {?track foaf:name ?track_name} UNION {?track rdfs:label ?track_name}
+            
+  OPTIONAL {?artist dbo:hometown ?hometown}
+
+  FILTER(LANG(?abstract)='LANGUAGE')
+  FILTER(REGEX(?artist_name, "^ARTIST_NAME$", "i"))
+  FILTER(REGEX(?track_name, "TRACK_NAME", "i"))
+}
+LIMIT 1 

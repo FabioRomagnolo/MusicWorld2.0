@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {% block title %}
+        <title>Error page</title>
+    {% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/common.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="details">
+        <div class="row">
+            <!-- Left column -->
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                {% block error_image %}
+                    <div class="img-container container">
+                        <img class="img-full" src="{{ url_for('static', filename='images/default_error.png') }}">
+                    </div> <br>
+                {% endblock %}
+            </div>
+            <!-- End of left column -->
+
+            <!-- Contents -->
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                {% block error_text %}
+                    <div class="description">
+                        <span>
+                            {% block error_title %}
+                                <h1>Error!</h1>
+                            {% endblock %}
+                            {% block error_description %}
+                                <p>This is the error description.</p>
+                            {% endblock %}
+                            <a href="{{ url_for('index') }}">Go to homepage</a>
+                        </span>
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>{{ title }}</title>
+    <meta name="description" content="Your Music World's profile page.">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/login.css') }}">
+
+    <!-- Sweet Alert library for confirm javascript pop-up -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!-- Google Auth Library - Sign In With Google -->
+    <meta name="google-signin-client_id" content="{{google_signin_client_id}}">
+    <script src="https://apis.google.com/js/api:client.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="details">
+        <div class="row">
+            <!-- Left column -->
+            <div class="col-lg-4 col-md-12 col-sm-12">
+                <div class="container img-container">
+                        {% if user.image %}
+                            <img class="img-full img-rounded shadow" src="{{user.image}}">
+                        {% else %}
+                            <img class="img-full" src="{{ url_for('static', filename='images/default_user.png') }}">
+                        {% endif %}
+                </div> <br>
+                <div class="designation">
+                    <h2>{{user.name}}</h2>
+                    <h6>{{user.email}}</h6>
+                </div>
+
+                <div class="logout-container shadow">
+                    <!-- Logout button -->
+                    {% if user.provider == 'google' %}
+                        <button onclick="googleLogout();" class="btn btn-lg btn-block text-uppercase btn-google" type="submit"><i class="fab fa-google mr-2"></i> Logout from Google</button>
+                    {% endif %}
+                    {% if user.provider == 'spotify' %}
+                        <button onclick="spotifyLogout();" class="btn btn-lg btn-spotify btn-block text-uppercase" type="submit"><i class="fab fa-spotify mr-2"></i> Logout from Spotify</button>
+                    {% endif %}
+                </div> <br>
+
+                <div class="settings-container shadow">
+                    <div class="list-group">
+                        <div class="list-group-item list-group-item-action d-flex w-100 justify-content-between active">
+                            <h5 class="mb-1">Manage account</h5>
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <a onclick="deleteAccount();" href="#" target="_self"
+                           class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100">
+                                <div>
+                                    <h6 class="mb-1"><i class="fas fa-trash-alt"></i> Delete account</h6>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div> <br>
+            </div>
+            <!-- End of left column -->
+
+            <!-- Contents -->
+            <div class="col-lg-8 col-md-12 col-sm-12">
+                <div class="table-contents favorite-tracks-table">
+                <!-- Table of contents -->
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <table class="table table-scrollable-header">
+                                <thead class="thead shadow default-cursor">
+                                    <tr><th>Your favorite tracks</th></tr>
+                                </thead>
+                            </table>
+                            <div class="table-scrollable scrollbar-style shadow">
+                                <table class="table table-hover table-scrollable-body">
+                                    <tbody>
+                                    {% if favorite_tracks %}
+                                        {% for track in favorite_tracks %}
+                                            <tr>
+                                                <th scope="row" class="default-cursor">{{loop.index}}</th>
+                                                <td class="col-9">
+                                                    <span>
+                                                        <a href="{{url_for('track', track_id=track.id)}}">{{track.name}}</a>
+                                                        <br>
+                                                        {% for artist in track.artists %}
+                                                            <a class="minor-link" href="{{url_for('artist', artist_id=artist.id)}}"
+                                                               target="_blank">{{artist.name}}{% if not loop.last %}{{', '}}{% endif %}</a>
+                                                        {% endfor %}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <p class="default-cursor">{{track.duration_ms | string | strftime('millisecond', '%M:%S')}}</p>
+                                                </td>
+                                                <td>
+                                                    <button title="Add or remove track from your favorites" id="btn-fav-{{track.id}}" class="favorites-button">
+                                                        <i id="i-fav-{{track.id}}" class="star fas fa-star"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <th scope="row" class="default-cursor">0</th>
+                                            <td>
+                                                <p>You don't have any favorite tracks at the moment. Try adding some!</p>
+                                            </td>
+                                            <td> </td>
+                                        </tr>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of table of contents -->
+            </div>
+            <!-- End of contents -->
+        </div>
+    </div>
+
+    <!-- Logout scripts -->
+    <script>
+        var googleSetup = function() {
+            const client_id = document.querySelector('meta[name="google-signin-client_id"]').content;
+            gapi.load('auth2', function(){
+                // Retrieve the singleton for the GoogleAuth library and set up the client.
+                auth2 = gapi.auth2.init({
+                    client_id: client_id,
+                });
+            });
+        };
+    </script>
+    <script>googleSetup();</script>
+
+    <script>
+        function googleLogout() {
+            // Google logout
+            const client_id = document.querySelector('meta[name="google-signin-client_id"]').content;
+            gapi.load('auth2', function() {
+                // Retrieve the singleton for the GoogleAuth library and set up the client.
+                auth2 = gapi.auth2.init({
+                    client_id: client_id,
+                });
+            });
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+              console.log('User signed out.');
+            });
+            auth2.disconnect();
+
+            flaskLogout();
+
+            $("body").addClass("loading");
+            setTimeout(function(){
+                console.log('Redirecting to index...');
+                window.location.href = "{{ url_for('index') }}"
+            },3000);
+        }
+
+        function spotifyLogout() {
+            // Spotify logout
+            var spotify_logout = window.open("https://accounts.spotify.com/logout", 'Logging out from Spotify...',
+                "status=yes,toolbar=no,scrollbars=yes,menubar=no,location=no");
+            setTimeout(function(){
+                spotify_logout.close();
+            },3000);
+            this.window.focus();
+
+            flaskLogout();
+
+            $("body").addClass("loading");
+            setTimeout(function(){
+                console.log('Redirecting to index...');
+                window.location.href = "{{ url_for('index') }}"
+            },3000);
+        }
+
+        function flaskLogout(_callback) {
+            // Logging out as current user on Flask
+            $.ajax({
+                type: "POST",
+                url: "{{ url_for('logout') }}",
+                success: function(response) {
+                    console.log(response);
+                    _callback();
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
+    </script>
+    <!-- End of logout scripts -->
+
+    <!-- Delete account script -->
+    <script>
+        function deleteAccount() {
+            swal({
+                title: "Your Music World account will be deleted permanently!",
+                text: "All of your personal data and favorite tracks will be lost.\nAre you sure to proceed?",
+                icon: "warning",
+                dangerMode: true,
+                buttons: ["No, I am not sure!", "Yes, remove my account!"],
+                closeOnConfirm: false,
+                closeOnCancel: false
+            }).then((willDelete) => {
+                if (willDelete) {
+                    swal("Account removed!", "Your account has been removed permanently!", "success");
+                    //Deleting user from Firestore DB
+                    $.ajax({
+                        type: "DELETE",
+                        url: "{{ url_for('profile') }}",
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                    if ("{{ user.provider }}" === 'spotify') {
+                        spotifyLogout();
+                    }
+                    if ("{{ user.provider }}" === 'google') {
+                        googleLogout();
+                    }
+                } else {
+                    swal("Request canceled", "Your account has not been removed!", "error");
+                }
+            });
+        }
+    </script>
+    <!-- End of delete account script -->
+{% endblock %}

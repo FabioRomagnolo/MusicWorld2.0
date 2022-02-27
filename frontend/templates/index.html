@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>{{ title }}</title>
+    <meta name="description" content="Get songs, lyrics, facts & more from Music World.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}">
+{% endblock %}
+
+{% block content %}
+    <!-- Welcome and search bar -->
+    <div class="search-main">
+        <h1>Welcome to Music World!</h1>
+        <h4>Search for any artist, album or song you want.</h4>
+        <br>
+        <div class="container h-100">
+          <div class="d-flex justify-content-center h-100">
+            <div class="searchbar shadow">
+                <form method="POST" action="{{url_for('index')}}">
+                    <input class="search_input" maxlength="255" type="text" name="query" placeholder="Search..." value="{{query}}">
+                    <a href="#" onclick=this.parentNode.submit(); class="search_icon"><i class="fas fa-search"></i></a>
+                </form>
+            </div>
+          </div>
+        </div>
+        <br>
+        {% if error %}
+            <div>
+                <p style="color:red">{{error}}</p><br>
+            </div>
+        {% endif %}
+    </div> <br>
+
+    <!-- Search results -->
+    <div class="search-results">
+        <div class="row">
+            {% if artists %}
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <table class="table table-scrollable-header">
+                        <thead class="thead shadow default-cursor">
+                            <tr><th>Artists found</th></tr>
+                        </thead>
+                    </table>
+                    <div class="table-scrollable scrollbar-style shadow">
+                        <table class="table table-hover table-scrollable-body">
+                            <tbody>
+                                {% for artist in artists %}
+                                    <tr class="artists-row">
+                                      <th scope="row">{{loop.index}}</th>
+                                      <td>
+                                          <a href="{{url_for('artist', artist_id=artist.id)}}">{{artist.name}}</a>
+                                      </td>
+                                      <td class="td-image">
+                                          {% if artist.images %}
+                                            <img class="img-max-full rounded float-right" src="{{artist.images[0].url}}">
+                                          {% else %}
+                                            <img class="img-max-full rounded float-right" src="{{ url_for('static', filename='images/default_artist.png') }}">
+                                          {% endif %}
+                                      </td>
+                                    </tr>
+                                {% endfor %}
+
+                                <!-- Show more button row -->
+                                <tr class="more-artists-row">
+                                    <td colspan="3">
+                                        <button type="button" class="btn-show-more btn-show-more-artists btn btn-primary btn-md">
+                                            <!--<i class="fas fa-chevron-down"></i>&emsp;&emsp;-->
+                                            Show more artists
+                                        </button>
+                                        <script>
+                                            $('tr.artists-row:gt(2)').hide();
+                                            var artists_visible = $('tr.artists-row:visible').length;
+                                            var artists_hidden = $('tr.artists-row:hidden').length;
+                                            console.log("N. of artists visible: "+artists_visible)
+
+                                            $('button.btn-show-more-artists').on('click', function() {
+                                                $('tr.artists-row:gt('+(artists_visible-1)+')').slice(0,20).show();
+                                                artists_visible = $('tr.artists-row:visible').length;
+                                                console.log("N. of artists visible: "+artists_visible);
+                                                artists_hidden = $('tr.artists-row:hidden').length
+                                                console.log("N. of artists hidden: "+artists_hidden)
+                                                if (artists_hidden === 0) {$('tr.more-artists-row').hide();}
+                                            })
+                                            if (artists_hidden === 0) {$('tr.more-artists-row').hide();}
+                                        </script>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if albums %}
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <table class="table table-scrollable-header">
+                        <thead class="thead shadow default-cursor">
+                            <tr><th>Albums found</th></tr>
+                        </thead>
+                    </table>
+                    <div class="table-scrollable scrollbar-style shadow">
+                        <table class="table table-hover table-scrollable-body">
+                            <tbody>
+                                {% for album in albums %}
+                                    <tr class="albums-row">
+                                        <th scope="row" class="default-cursor">{{loop.index}}</th>
+                                        <td>
+                                            <a href="{{url_for('album', album_id=album.id)}}">{{album.name}}</a>
+                                            <br>
+                                            <p>
+                                                {% for artist in album.artists %}
+                                                    <a class="minor-link" href="{{url_for('artist', artist_id=artist.id)}}" target="_blank">
+                                                        {% if loop.index > 2 %}...{% break %}{% endif %}
+                                                        {{artist.name}}{% if not loop.last %}{{', '}}{% endif %}
+                                                    </a>
+                                                {% endfor %}
+                                            </p>
+                                            <p class="default-cursor">{{album.album_type | capitalize}}</p>
+                                            <p class="default-cursor">{{album.release_date | strftime(album.release_date_precision, '%Y')}}</p>
+                                        </td>
+                                        <td class="td-image">
+                                            {% if album.images %}
+                                                <img class="img-max-full rounded float-right" src="{{album.images[0].url}}">
+                                            {% else %}
+                                                <img class="img-max-full rounded float-right" src="{{ url_for('static', filename='images/default_album.png') }}">
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                <!-- Show more button row -->
+                                <tr class="more-albums-row">
+                                    <td colspan="3">
+                                        <button type="button" class="btn-show-more btn-show-more-albums btn btn-primary btn-md">
+                                            Show more albums
+                                        </button>
+                                        <script>
+                                            $('tr.albums-row:gt(2)').hide();
+                                            var albums_visible = $('tr.albums-row:visible').length;
+                                            var albums_hidden = $('tr.albums-row:hidden').length;
+                                            console.log("N. of albums visible: "+albums_visible)
+
+                                            $('button.btn-show-more-albums').on('click', function() {
+                                                $('tr.albums-row:gt('+(albums_visible-1)+')').slice(0,20).show();
+                                                albums_visible = $('tr.albums-row:visible').length;
+                                                console.log("N. of albums visible: "+albums_visible);
+                                                albums_hidden = $('tr.albums-row:hidden').length
+                                                console.log("N. of albums hidden: "+albums_hidden)
+                                                if (albums_hidden === 0) {$('tr.more-albums-row').hide();}
+                                            })
+                                            if (albums_hidden === 0) {$('tr.more-albums-row').hide();}
+                                        </script>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+
+            {% if tracks %}
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <table class="table table-scrollable-header">
+                        <thead class="thead shadow default-cursor">
+                            <tr><th>Songs found</th></tr>
+                        </thead>
+                    </table>
+                    <div class="table-scrollable scrollbar-style shadow">
+                        <table class="table table-hover table-scrollable-body">
+                            <tbody>
+                                {% for track in tracks %}
+                                    <tr class="tracks-row">
+                                        <th scope="row" class="default-cursor">{{loop.index}}</th>
+                                        <td>
+                                            <span>
+                                                <a href="{{url_for('track', track_id=track.id)}}">{{track.name}}</a>
+                                                <br>
+                                                <p>
+                                                    {% for artist in track.artists %}
+                                                        <a class="minor-link" href="{{url_for('artist', artist_id=artist.id)}}" target="_blank">
+                                                            {% if loop.index > 2 %}...{% break %}{% endif %}
+                                                            {{artist.name}}{% if not loop.last %}{{', '}}{% endif %}
+                                                        </a>
+                                                    {% endfor %}
+                                                </p>
+                                                <p class="default-cursor">{{track.album.release_date | strftime(track.album.release_date_precision, '%Y')}}</p>
+                                            </span>
+                                            {% if favorite_tracks_ids is defined %}
+                                                <button title="Add or remove track from your favorites" id="btn-fav-{{track.id}}" class="favorites-button">
+                                                    <i id="i-fav-{{track.id}}" class="star far fa-star"></i>
+                                                </button>
+                                            {% endif %}
+                                        </td>
+                                        <td class="td-image">
+                                            {% if track.album.images %}
+                                                <img class="img-max-full rounded float-right" src="{{track.album.images[0].url}}">
+                                            {% else %}
+                                                <img class="img-max-full rounded float-right" src="{{ url_for('static', filename='images/default_track.svg') }}">
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                <!-- Show more button row -->
+                                <tr class="more-tracks-row">
+                                    <td colspan="3">
+                                        <button type="button" class="btn-show-more btn-show-more-tracks btn btn-primary btn-md">
+                                            <!--<i class="fas fa-chevron-down"></i>&emsp;&emsp;-->
+                                            Show more songs
+                                        </button>
+                                        <script>
+                                            $('tr.tracks-row:gt(2)').hide();
+                                            var tracks_visible = $('tr.tracks-row:visible').length;
+                                            var tracks_hidden = $('tr.tracks-row:hidden').length;
+                                            console.log("N. of tracks visible: "+tracks_visible)
+
+                                            $('button.btn-show-more-tracks').on('click', function() {
+                                                $('tr.tracks-row:gt('+(tracks_visible-1)+')').slice(0,20).show();
+                                                tracks_visible = $('tr.tracks-row:visible').length;
+                                                console.log("N. of tracks visible: "+tracks_visible);
+                                                tracks_hidden = $('tr.tracks-row:hidden').length;
+                                                console.log("N. of tracks hidden: "+tracks_hidden);
+                                                if (tracks_hidden === 0) {$('tr.more-tracks-row').hide();}
+                                            })
+                                            if (tracks_hidden === 0) {$('tr.more-tracks-row').hide();}
+                                        </script>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <!-- Script for Instagram opening link in external browser -->
+    <script>
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        var str = navigator.userAgent;
+        var instagram = str.indexOf("Instagram");
+        var facebook = str.indexOf("FB");
+        var musicworld_url = document.head.querySelector("[property='og:url'][content]").content;
+
+        if (instagram !== -1 || facebook !== -1 ) {
+            var browser_name = 'an unsupported';
+            if (instagram !== -1){browser_name = "Instagram";}
+            if (facebook !== -1){browser_name = "Facebook";}
+            $(".search-main").after(
+                "<a target=\"_blank\" href=\""+musicworld_url+"\" download id=\"open-browser-url\" style=\"color: red; text-decoration: none\">" +
+                "WARNING!<br>It looks like you are using "+browser_name+" browser, so Google Sign In and other functions may not work.<br>" +
+                "Click here to visit Music World on your default browser!</a><br>")
+            window.stop();
+            let input = document.getElementById('open-browser-url');
+            if (input) {
+                input.click();
+                window.stop();
+            }
+        }
+    </script>
+    <!-- End of script for Instagram opening link in external browser -->
+{% endblock scripts %}

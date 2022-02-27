@@ -1,0 +1,2134 @@
+openapi: 3.0.1
+info:
+  title: Music World 2.0
+  description: Get songs, lyrics, facts & more from Music World.
+  version: "1.0"
+servers:
+- url: https://musicworld-2022.appspot.com/api/v1
+security:
+- JWTBearerAuthorization: []
+tags:
+- name: Search
+- name: Artists
+- name: Albums
+- name: Tracks
+- name: Users
+paths:
+  /search/{query}:
+    get:
+      tags:
+      - Search
+      description: Get max the 100 artists, 100 album and 100 tracks retrieved by
+        query on Spotify's Search API.
+      operationId: searchGet
+      parameters:
+      - name: query
+        in: path
+        description: Query for Spotify Search API
+        required: true
+        schema:
+          maxLength: 255
+          minLength: 1
+          type: string
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResult'
+        400:
+          description: Invalid or missing query.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API returned nothing.
+          content: {}
+  /news/{query}:
+    get:
+      tags:
+      - Search
+      description: |-
+        Get max the 20 latest news about query from the following News API's sources:
+        BBC, The Guardian, VICE, Google News, MTV News, Billboard, Il Corriere, Mediaset, GQ Italia.
+
+        The Developer Plan permits you to request 100 articles per day as far back as one month ago.
+        Before using this endpoint you should write the query taking care of:
+         - Surrounding phrases with quotes (") for exact match;
+        - Prepending words or phrases that must appear with a + symbol;
+        - Prepending words that must not appear with a - symbol;
+        - Alternatively, using the AND / OR / NOT keywords, and optionally group these with parenthesis;
+      operationId: newsGet
+      parameters:
+      - name: query
+        in: path
+        description: Query for News API
+        required: true
+        schema:
+          maxLength: 255
+          minLength: 1
+          type: string
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsResult'
+        400:
+          description: Invalid or missing query.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: News API returned nothing.
+          content: {}
+  /artists/{artist_id}:
+    get:
+      tags:
+      - Artists
+      description: Get all the Spotify's informations about the artist.
+      operationId: artistsGet
+      parameters:
+      - name: artist_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API returned nothing.
+          content: {}
+  /artists/{artist_id}/albums:
+    get:
+      tags:
+      - Artists
+      description: Get all the Spotify's informations about the artist's albums.
+      operationId: artistsAlbumsGet
+      parameters:
+      - name: artist_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Album'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API returned nothing.
+          content: {}
+  /artists/{artist_id}/top-tracks:
+    get:
+      tags:
+      - Artists
+      description: Get the Spotify's Top 10 Tracks of the artist.
+      operationId: artistsTopTracksGet
+      parameters:
+      - name: artist_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Track'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API returned nothing.
+          content: {}
+  /artists/{artist_id}/genius:
+    get:
+      tags:
+      - Artists
+      description: Get the Genius' URL and all the annotations about the artist.
+      operationId: artistsGeniusGet
+      parameters:
+      - name: artist_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistGenius'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API or Genius API returned nothing.
+          content: {}
+  /artists/{artist_id}/sparql:
+    get:
+      tags:
+      - Artists
+      description: Get essential Linked Open Data annotations about the artist from
+        DBpedia and Geonames.
+      operationId: artistsSparqlGet
+      parameters:
+      - name: artist_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      - name: language
+        in: query
+        description: Language string to insert into SPARQL query. ISO 639-1 is recommended.
+        schema:
+          type: string
+      - name: get_full_info
+        in: query
+        description: "If setted to 'true' gets full LOD annotations about artist.\
+          \ \n\nWARNING: it's a very slow operation!"
+        schema:
+          type: string
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistSparql'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API or Sparql API returned nothing.
+          content: {}
+  /albums/{album_id}:
+    get:
+      tags:
+      - Albums
+      description: Get all the Spotify's informations about the album.
+      operationId: albumsGet
+      parameters:
+      - name: album_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Album'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API returned nothing.
+          content: {}
+  /albums/{album_id}/tracks:
+    get:
+      tags:
+      - Albums
+      description: Get all the Spotify's informations about the album's tracks.
+      operationId: albumsTracksGet
+      parameters:
+      - name: album_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Track'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API returned nothing.
+          content: {}
+  /albums/{album_id}/genius:
+    get:
+      tags:
+      - Albums
+      description: Get the Genius' URL and all the annotations about the album.
+      operationId: albumsGeniusGet
+      parameters:
+      - name: album_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlbumGenius'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API or Genius API returned nothing.
+          content: {}
+  /albums/{album_id}/sparql:
+    get:
+      tags:
+      - Albums
+      description: Get essential Linked Open Data annotations about the album from
+        DBpedia and Geonames.
+      operationId: albumsSparqlGet
+      parameters:
+      - name: album_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      - name: language
+        in: query
+        description: Language string to insert into SPARQL query. ISO 639-1 is recommended.
+        schema:
+          type: string
+      - name: get_full_info
+        in: query
+        description: "If setted to 'true' gets full LOD annotations about artist.\
+          \ \n\nWARNING: it's a very slow operation!"
+        schema:
+          type: string
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlbumSparql'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API or Sparql API returned nothing.
+          content: {}
+  /tracks/{track_id}:
+    get:
+      tags:
+      - Tracks
+      description: Get all the Spotify's informations about the track and the lyrics
+        if they are available on database.
+      operationId: tracksGet
+      parameters:
+      - name: track_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API returned nothing.
+          content: {}
+    post:
+      tags:
+      - Tracks
+      description: Post the track's lyrics on database.
+      operationId: tracksPost
+      parameters:
+      - name: track_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      requestBody:
+        description: Content of the request's body
+        content:
+          application/json:
+            schema:
+              required:
+              - lyrics
+              type: object
+              properties:
+                lyrics:
+                  type: string
+                  description: Genius' lyrics of the track.
+                name:
+                  type: string
+                  description: Track's name on Spotify.
+              example:
+                name: Wish You Were Here
+                lyrics: |-
+                  [Spoken Intro]
+                  And disciplinary remains mercifully
+                  Yes and um, I’m with you Derek, this star nonsense
+                  Yes, yes, now which is it?
+                  I am sure of it
+                  [Twelve-string guitar Intro]
+
+                  [Verse]
+                  So, so you think you can tell
+                  Heaven from Hell? Blue skies from pain?
+                  Can you tell a green field from a cold steel rail?
+                  A smile from a veil? Do you think you can tell?
+                  Did they get you to trade your heroes for ghosts?
+                  Hot ashes for trees? Hot air for a cool breeze?
+                  Cold comfort for change? Did you exchange
+                  A walk-on part in the war
+                  For a lead role in a cage?
+
+                  [Acoustic Guitar Solo]
+
+                  [Chorus]
+                  How I wish, how I wish you were here
+                  We're just two lost souls swimming in a fishbowl year after year
+                  Running over the same old ground, what have we found?
+                  The same old fears, wish you were here
+                  [Instrumental Outro & Scatting]EmbedShare Url:CopyEmbed:Copy
+        required: true
+      responses:
+        201:
+          description: Success.
+          content: {}
+        400:
+          description: Invalid base62 identifier or invalid body.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        409:
+          description: Conflict. The track is already inserted in the database.
+          content: {}
+        500:
+          description: Generic database error.
+          content: {}
+      x-codegen-request-body-name: requestBody
+    delete:
+      tags:
+      - Tracks
+      description: Delete the track's informations saved on database.
+      operationId: tracksDelete
+      parameters:
+      - name: track_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content: {}
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: The track was not found on database.
+          content: {}
+        500:
+          description: Generic database error.
+          content: {}
+  /tracks/{track_id}/genius:
+    get:
+      tags:
+      - Tracks
+      description: Get the Genius' URL, all the annotations about the track and lyrics.
+      operationId: tracksGeniusGet
+      parameters:
+      - name: track_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackGenius'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API or Genius API returned nothing.
+          content: {}
+  /tracks/{track_id}/sparql:
+    get:
+      tags:
+      - Tracks
+      description: Get essential Linked Open Data annotations about the track from
+        DBpedia and Geonames.
+      operationId: tracksSparqlGet
+      parameters:
+      - name: track_id
+        in: path
+        description: Base62 identifier at the end of the Spotify URI
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      - name: language
+        in: query
+        description: Language string to insert into SPARQL query. ISO 639-1 is recommended.
+        schema:
+          type: string
+      - name: get_full_info
+        in: query
+        description: "If setted to 'true' gets full LOD annotations about artist.\
+          \ \n\nWARNING: it's a very slow operation!"
+        schema:
+          type: string
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackSparql'
+        400:
+          description: Invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify API or Sparql API returned nothing.
+          content: {}
+  /users/{email}:
+    get:
+      tags:
+      - Users
+      description: Get all the registered user's main informations available on database.
+      operationId: usersGet
+      parameters:
+      - name: email
+        in: path
+        description: Email address of the user
+        required: true
+        schema:
+          type: string
+          format: email
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Invalid email address.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: The user is not registered on Music World.
+          content: {}
+        500:
+          description: Generic database error.
+          content: {}
+    post:
+      tags:
+      - Users
+      description: Register the user on Music World.
+      operationId: usersPost
+      parameters:
+      - name: email
+        in: path
+        description: Email address of the user
+        required: true
+        schema:
+          type: string
+          format: email
+      requestBody:
+        description: Content of the request's body
+        content:
+          application/json:
+            schema:
+              required:
+              - provider
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: nullable
+                image:
+                  type: string
+                  format: nullable
+                provider:
+                  type: string
+                  enum:
+                  - google
+                  - spotify
+        required: true
+      responses:
+        201:
+          description: Success.
+          content: {}
+        400:
+          description: Invalid email address or invalid body.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        409:
+          description: Conflict. The user is already registered.
+          content: {}
+        500:
+          description: Generic database error.
+          content: {}
+      x-codegen-request-body-name: requestBody
+    delete:
+      tags:
+      - Users
+      description: Delete all the users's informations saved on database.
+      operationId: usersDelete
+      parameters:
+      - name: email
+        in: path
+        description: Email address of the user
+        required: true
+        schema:
+          type: string
+          format: email
+      responses:
+        200:
+          description: Success.
+          content: {}
+        400:
+          description: Invalid email address.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: The user is not registered on Music World.
+          content: {}
+        500:
+          description: Generic database error.
+          content: {}
+  /users/{email}/favorite-tracks:
+    get:
+      tags:
+      - Users
+      description: Get all the favorite tracks' user as list of ids.
+      operationId: usersFavoriteTracksGet
+      parameters:
+      - name: email
+        in: path
+        description: Email address of the user
+        required: true
+        schema:
+          type: string
+          format: email
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                - id: 0vFOzaXqZHahrZp6enQwQb
+                - id: 3TO7bbrUKrOSPGRTB5MeCz
+                - id: 5HNCy40Ni5BZJFw1TKzRsC
+                items:
+                  required:
+                  - id
+                  type: object
+                  properties:
+                    id:
+                      maxLength: 22
+                      minLength: 22
+                      type: string
+                      format: base62
+        400:
+          description: Invalid email address or invalid request's URL.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: The user is not registered on Music World.
+          content: {}
+        500:
+          description: Generic database error.
+          content: {}
+  /users/{email}/favorite-tracks/{track_id}:
+    post:
+      tags:
+      - Users
+      description: Add the track to user's favorite tracks list on database.
+      operationId: usersFavoriteTracksPost
+      parameters:
+      - name: email
+        in: path
+        description: Email address of the user
+        required: true
+        schema:
+          type: string
+          format: email
+      - name: track_id
+        in: path
+        description: Favorite Spotify track's id
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        201:
+          description: Success.
+          content: {}
+        400:
+          description: Invalid email address or invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: The user is not registered on Music World or Spotify did not
+            return any track.
+          content: {}
+        409:
+          description: Conflict. The track is already a user's favorite one.
+          content: {}
+        500:
+          description: Generic database error.
+          content: {}
+    delete:
+      tags:
+      - Users
+      description: Delete the favorite track from user's favorite tracks list on database.
+      operationId: usersFavoriteTracksDelete
+      parameters:
+      - name: email
+        in: path
+        description: Email address of the user
+        required: true
+        schema:
+          type: string
+          format: email
+      - name: track_id
+        in: path
+        description: Favorite Spotify track's id
+        required: true
+        schema:
+          maxLength: 22
+          minLength: 22
+          type: string
+          format: base62
+      responses:
+        200:
+          description: Success.
+          content: {}
+        400:
+          description: Invalid email address or invalid base62 identifier.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: The user is not registered on Music World or Spotify did not
+            return any track.
+          content: {}
+        500:
+          description: Generic database error.
+          content: {}
+  /users/spotify:
+    get:
+      tags:
+      - Users
+      description: Once obtained the Spotify's user authorization code from login,
+        this endpoint allows Music World to get the basic profile data as PrivateUserObject.
+      operationId: usersSpotifyGet
+      parameters:
+      - name: authorization_code
+        in: query
+        description: Spotify's authorization code
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSpotify'
+        400:
+          description: Missing authorization code in request's parameters.
+          content: {}
+        401:
+          description: Unauthorized. Missing 'Authorization' header.
+          content: {}
+        403:
+          description: Invalid Json Web Token (JWT) in 'Authorization' header.
+          content: {}
+        404:
+          description: Spotify user not found. The authorization code is invalid or
+            the authorized redirect URI is wrong.
+          content: {}
+components:
+  schemas:
+    SearchResult:
+      type: object
+      properties:
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artist'
+        albums:
+          type: array
+          items:
+            $ref: '#/components/schemas/Album'
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
+    NewsResult:
+      type: array
+      example:
+      - source:
+          id: bbc-news
+          name: BBC News
+        author: https://www.facebook.com/bbcnews
+        title: British music exports reach a record high
+        description: Artists like Dua Lipa, Coldplay and The Beatles help the British
+          music industry make £500m overseas.
+        url: https://www.bbc.co.uk/news/entertainment-arts-57486272
+        urlToImage: https://ichef.bbci.co.uk/news/1024/branded_news/13FD1/production/_118937818_artistmontage.jpg
+        publishedAt: 2021-06-16T03:21:49Z
+        content: By Mark SavageBBC music reporter\r\nimage copyrightGetty Images\r\nimage
+          captionNew hits and classic tracks have helped the UK become the second-biggest
+          exporter of music in the world\r\nDua Lipa, Coldplay… [+2070 chars]
+      items:
+        type: object
+        properties:
+          source:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+          author:
+            type: string
+          title:
+            type: string
+          description:
+            type: string
+          url:
+            type: string
+          urlToImage:
+            type: string
+          publishedAt:
+            type: string
+            format: date-time
+          content:
+            type: string
+    Artist:
+      type: object
+      properties:
+        external_urls:
+          type: object
+          properties:
+            spotify:
+              type: string
+        followers:
+          type: object
+          properties:
+            href:
+              type: string
+              format: nullable
+            total:
+              type: integer
+              format: int32
+        genres:
+          type: array
+          items:
+            type: string
+        href:
+          type: string
+        id:
+          type: string
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              height:
+                type: integer
+                format: int32
+              url:
+                type: string
+              width:
+                type: integer
+                format: int32
+        name:
+          type: string
+        popularity:
+          type: integer
+          format: int32
+        type:
+          type: string
+        uri:
+          type: string
+      example:
+        external_urls:
+          spotify: https://open.spotify.com/artist/0k17h0D3J5VfsdmQ1iZtE9
+        followers:
+          total: 14862890
+        genres:
+        - album rock
+        - art rock
+        - classic rock
+        - progressive rock
+        - psychedelic rock
+        - rock
+        - symphonic rock
+        href: https://api.spotify.com/v1/artists/0k17h0D3J5VfsdmQ1iZtE9
+        id: 0k17h0D3J5VfsdmQ1iZtE9
+        images:
+        - height: 977
+          url: https://i.scdn.co/image/e69f71e2be4b67b82af90fb8e9d805715e0684fa
+          width: 1000
+        - height: 625
+          url: https://i.scdn.co/image/d011c95081cd9a329e506abd7ded47535d524a07
+          width: 640
+        - height: 195
+          url: https://i.scdn.co/image/f0a39a8a196a87a7236bdcf8a8708f6d5d3547cc
+          width: 200
+        - height: 63
+          url: https://i.scdn.co/image/ec1fb7127168dbaa962404031409c5a293b95ec6
+          width: 64
+        name: Pink Floyd
+        popularity: 83
+        type: artist
+        uri: spotify:artist:0k17h0D3J5VfsdmQ1iZtE9
+    ArtistGenius:
+      type: object
+      properties:
+        url:
+          type: string
+        annotations:
+          type: object
+          properties:
+            description:
+              type: string
+            alternate_names:
+              type: array
+              items:
+                type: string
+      example:
+        url: https://genius.com/artists/Pink-floyd
+        annotations:
+          description: <p>Pink Floyd was a British rock band who managed to carve
+            a path for progressive and psychedelic music in a way that was uniquely
+            fascinating at the time and has remained equally momentous in the modern
+            age.</p>
+          alternate_names: []
+    ArtistSparql:
+      type: object
+      properties:
+        dbpedia:
+          type: object
+          properties:
+            artist:
+              type: string
+            artist_name:
+              type: string
+            wiki:
+              type: string
+            hometown:
+              type: string
+            birth_date:
+              type: string
+            death_date:
+              type: string
+            start_year:
+              type: integer
+            end_year:
+              type: integer
+            aliases:
+              type: array
+              items:
+                type: string
+            labels:
+              type: array
+              items:
+                type: string
+            plays_in:
+              type: array
+              items:
+                type: string
+            genres:
+              type: array
+              items:
+                type: string
+            actual_members:
+              type: array
+              items:
+                type: string
+            old_members:
+              type: array
+              items:
+                type: string
+            related_artists:
+              type: array
+              items:
+                type: string
+            abstract:
+              type: string
+        geonames:
+          $ref: '#/components/schemas/GeonamesSparql'
+      example:
+        dbpedia:
+          artist: http://dbpedia.org/resource/Bring_Me_the_Horizon
+          artist_name: Bring Me the Horizon
+          wiki: http://en.wikipedia.org/wiki/Bring_Me_the_Horizon
+          hometown: http://dbpedia.org/resource/South_Yorkshire
+          start_year: "2004"
+          aliases: ""
+          labels:
+          - http://dbpedia.org/resource/BMG_Rights_Management
+          - http://dbpedia.org/resource/Columbia_Records
+          - http://dbpedia.org/resource/Earache_Records
+          - http://dbpedia.org/resource/Epitaph_Records
+          - http://dbpedia.org/resource/RCA_Records
+          - http://dbpedia.org/resource/Shock_Records
+          - http://dbpedia.org/resource/Sony_Music
+          - http://dbpedia.org/resource/Visible_Noise
+          plays_in:
+          - http://dbpedia.org/resource/Pyewacket_(film)
+          genres:
+          - http://dbpedia.org/resource/Alternative_metal
+          - http://dbpedia.org/resource/Alternative_rock
+          - http://dbpedia.org/resource/Deathcore
+          - http://dbpedia.org/resource/Electronic_rock
+          - http://dbpedia.org/resource/Metalcore
+          - http://dbpedia.org/resource/Pop_rock
+          actual_members:
+          - http://dbpedia.org/resource/Oliver_Sykes
+          - Lee Malia
+          - Jordan Fish
+          - Matt Kean
+          - Matt Nicholls
+          old_members:
+          - http://dbpedia.org/resource/Jona_Weinhofen
+          - Curtis Ward
+          related_artists:
+          - http://dbpedia.org/resource/Dan_Lancaster
+          - http://dbpedia.org/resource/I_Killed_the_Prom_Queen
+          - http://dbpedia.org/resource/Jona_Weinhofen
+          - http://dbpedia.org/resource/Proxies_(band)
+          - http://dbpedia.org/resource/Ted_Jensen
+          - http://dbpedia.org/resource/Zakk_Cervini
+          abstract: Bring Me the Horizon (often abbreviated as BMTH) are a British
+            rock band formed in Sheffield in 2004. The group consists of lead vocalist
+            Oliver Sykes, guitarist Lee Malia, bassist Matt Kean, drummer Matt Nicholls
+            and keyboardist Jordan Fish. They are signed to RCA Records globally and
+            Columbia Records exclusively in the United States. The band released their
+            debut album Count Your Blessings in 2006. Upon release, the album's sound
+            polarised listeners, and was met with critical disdain. The band began
+            to break away from their controversial sound with Suicide Season (2008),
+            which was a creative, critical and commercial turning point for the band.
+            Bring Me the Horizon released their third album, There Is a Hell Believe
+            Me I've Seen It. There Is a Heaven Let's Keep It a Secret., in 2010, propelling
+            them to greater international fame, whilst incorporating influences from
+            classical music, electronica and pop. Their major label debut, Sempiternal
+            (2013) achieved Gold certification in Australia (35,000) and Silver in
+            the United Kingdom (60,000). That's the Spirit (2015) debuted at number
+            two in the UK Albums Chart and the US Billboard 200. Their sixth studio
+            album Amo (2019) became their first UK chart topper. As well as these
+            six studio albums, they have also released two extended plays and two
+            live albums. They have received four Kerrang! Awards, including two for
+            Best British Band and one for Best Live Band, and have been nominated
+            for two Grammy Awards. The style of their early work, including their
+            debut album Count Your Blessings, has been described primarily as deathcore,
+            but they started to adopt a more eclectic style of metalcore on later
+            albums. Furthermore, That's the Spirit marked a shift in their sound to
+            less aggressive rock music styles. Amo saw a shift into different genres,
+            such as electronica, pop and hip hop.
+        geonames:
+          place_name: South Yorkshire
+          country_code: GB
+          wiki: http://en.wikipedia.org/wiki/South_Yorkshire
+          place: http://sws.geonames.org/2637273/
+          geo_link: http://www.geonames.org/2637273/south-yorkshire.html
+          lat: "53.5"
+          long: -1.3333333333333333
+          population: "1292900"
+    Album:
+      type: object
+      properties:
+        album_type:
+          type: string
+        artists:
+          type: array
+          items:
+            type: object
+            properties:
+              external_urls:
+                type: object
+                properties:
+                  spotify:
+                    type: string
+              href:
+                type: string
+              id:
+                type: string
+              name:
+                type: string
+              type:
+                type: string
+              uri:
+                type: string
+        available_markets:
+          type: array
+          items:
+            type: string
+        copyrights:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+              type:
+                type: string
+        external_ids:
+          type: object
+          properties:
+            upc:
+              type: string
+        external_urls:
+          type: object
+          properties:
+            spotify:
+              type: string
+        genres:
+          type: array
+          items:
+            type: string
+        href:
+          type: string
+        id:
+          type: string
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              height:
+                type: integer
+                format: int32
+              url:
+                type: string
+              width:
+                type: integer
+                format: int32
+        label:
+          type: string
+        name:
+          type: string
+        popularity:
+          type: integer
+          format: int32
+        release_date:
+          type: string
+          format: date
+        release_date_precision:
+          type: string
+        total_tracks:
+          type: integer
+          format: int32
+        tracks:
+          type: object
+          properties:
+            href:
+              type: string
+            items:
+              type: array
+              items:
+                type: object
+                properties:
+                  artists:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        external_urls:
+                          type: object
+                          properties:
+                            spotify:
+                              type: string
+                        href:
+                          type: string
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        type:
+                          type: string
+                        uri:
+                          type: string
+                  available_markets:
+                    type: array
+                    items:
+                      type: string
+                  disc_number:
+                    type: integer
+                    format: int32
+                  duration_ms:
+                    type: integer
+                    format: int32
+                  explicit:
+                    type: boolean
+                  external_urls:
+                    type: object
+                    properties:
+                      spotify:
+                        type: string
+                  href:
+                    type: string
+                  id:
+                    type: string
+                  is_local:
+                    type: boolean
+                  name:
+                    type: string
+                  preview_url:
+                    type: string
+                  track_number:
+                    type: integer
+                    format: int32
+                  type:
+                    type: string
+                  uri:
+                    type: string
+            limit:
+              type: integer
+              format: int32
+            next:
+              type: string
+              format: nullable
+            offset:
+              type: integer
+              format: int32
+            previous:
+              type: string
+              format: nullable
+            total:
+              type: integer
+              format: int32
+        type:
+          type: string
+        uri:
+          type: string
+      example:
+        album_type: album
+        artists:
+        - external_urls:
+            spotify: https://open.spotify.com/artist/0k17h0D3J5VfsdmQ1iZtE9
+          href: https://api.spotify.com/v1/artists/0k17h0D3J5VfsdmQ1iZtE9
+          id: 0k17h0D3J5VfsdmQ1iZtE9
+          name: Pink Floyd
+          type: artist
+          uri: spotify:artist:0k17h0D3J5VfsdmQ1iZtE9
+        available_markets:
+        - AE
+        - AG
+        - AO
+        copyrights:
+        - text: (P) 2016 The copyright in this sound recording is owned by Pink Floyd
+            Music Ltd., marketed and distributed by Sony Music Entertainment
+          type: P
+        external_ids:
+          upc: "886445613841"
+        external_urls:
+          spotify: https://open.spotify.com/album/5Dbax7G8SWrP9xyzkOvy2F
+        genres: []
+        href: https://api.spotify.com/v1/albums/5Dbax7G8SWrP9xyzkOvy2F
+        id: 5Dbax7G8SWrP9xyzkOvy2F
+        images:
+        - height: 640
+          url: https://i.scdn.co/image/ab67616d0000b273288d32d88a616b9a278ddc07
+          width: 640
+        - height: 300
+          url: https://i.scdn.co/image/ab67616d00001e02288d32d88a616b9a278ddc07
+          width: 300
+        - height: 64
+          url: https://i.scdn.co/image/ab67616d00004851288d32d88a616b9a278ddc07
+          width: 64
+        label: Pink Floyd Records
+        name: The Wall
+        popularity: 74
+        release_date: 1979-11-30
+        release_date_precision: day
+        total_tracks: 26
+        tracks:
+          href: https://api.spotify.com/v1/albums/5Dbax7G8SWrP9xyzkOvy2F/tracks?offset=0&limit=50
+          items:
+          - artists:
+            - external_urls:
+                spotify: https://open.spotify.com/artist/0k17h0D3J5VfsdmQ1iZtE9
+              href: https://api.spotify.com/v1/artists/0k17h0D3J5VfsdmQ1iZtE9
+              id: 0k17h0D3J5VfsdmQ1iZtE9
+              name: Pink Floyd
+              type: artist
+              uri: spotify:artist:0k17h0D3J5VfsdmQ1iZtE9
+            available_markets:
+            - VU
+            - WS
+            - ZA
+            - ZM
+            - ZW
+            disc_number: 1
+            duration_ms: 198221
+            explicit: false
+            external_urls:
+              spotify: https://open.spotify.com/track/24YmWQgunJGAU8El3ndkyn
+            href: https://api.spotify.com/v1/tracks/24YmWQgunJGAU8El3ndkyn
+            id: 24YmWQgunJGAU8El3ndkyn
+            is_local: false
+            name: In the Flesh?
+            preview_url: https://p.scdn.co/mp3-preview/a38c14bfaea20ed78a9823dff74740fcd8f89dc4?cid=e25b2446832246d39543fbe99f0c1629
+            track_number: 1
+            type: track
+            uri: spotify:track:24YmWQgunJGAU8El3ndkyn
+          limit: 50
+          next: None
+          offset: 0
+          previous: None
+          total: 26
+        type: album
+        uri: spotify:album:5Dbax7G8SWrP9xyzkOvy2F
+    AlbumGenius:
+      type: object
+      properties:
+        url:
+          type: string
+        annotations:
+          type: object
+          properties:
+            description:
+              type: string
+            producers:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  url:
+                    type: string
+            writers:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  url:
+                    type: string
+            labels:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  url:
+                    type: string
+      example:
+        url: https://genius.com/albums/Pink-floyd/Wish-you-were-here
+        annotations:
+          description: <p><em>Wish You Were Here</em> is the ninth studio album from
+            English rock band Pink Floyd.</p>
+          producers:
+          - name: Pink Floyd
+            url: https://genius.com/artists/Pink-floyd
+          writers:
+          - name: David Gilmour
+            url: https://genius.com/artists/David-gilmour
+          - name: Richard Wright
+            url: https://genius.com/artists/Richard-wright
+          - name: Roger Waters
+            url: https://genius.com/artists/Roger-waters
+          labels:
+          - name: Columbia Records
+            url: https://genius.com/artists/Columbia-records
+          - name: Harvest Records
+            url: https://genius.com/artists/Harvest-records
+    AlbumSparql:
+      type: object
+      properties:
+        dbpedia:
+          type: object
+          properties:
+            album:
+              type: string
+            album_name:
+              type: string
+            artist:
+              type: string
+            artist_name:
+              type: string
+            wiki:
+              type: string
+            released:
+              type: string
+            hometown:
+              type: string
+            producers:
+              type: array
+              items:
+                type: string
+            writers:
+              type: array
+              items:
+                type: string
+            awards:
+              type: array
+              items:
+                type: string
+            labels:
+              type: array
+              items:
+                type: string
+            genres:
+              type: array
+              items:
+                type: string
+            related_artists:
+              type: array
+              items:
+                type: string
+            abstract:
+              type: string
+        geonames:
+          $ref: '#/components/schemas/GeonamesSparql'
+      example:
+        dbpedia:
+          album: http://dbpedia.org/resource/That's_the_Spirit
+          album_name: That's the Spirit
+          artist: http://dbpedia.org/resource/Bring_Me_the_Horizon
+          artist_name: Bring Me the Horizon
+          wiki: http://en.wikipedia.org/wiki/That's_the_Spirit
+          released: 11 September 2015
+          hometown: http://dbpedia.org/resource/Sheffield
+          producers:
+          - Jordan Fish
+          - Oliver Sykes
+          writers: ""
+          awards:
+          - Gold
+          - Platinum
+          labels: ""
+          genres:
+          - Alternative rock
+          - alternative metal
+          - electronic rock
+          - nu metal
+          - pop rock
+          related_artists:
+          - http://dbpedia.org/resource/Dan_Lancaster
+          - http://dbpedia.org/resource/I_Killed_the_Prom_Queen
+          - http://dbpedia.org/resource/Jona_Weinhofen
+          - http://dbpedia.org/resource/Proxies_(band)
+          - http://dbpedia.org/resource/Ted_Jensen
+          - http://dbpedia.org/resource/Zakk_Cervini
+          abstract: That's the Spirit is the fifth studio album by British rock band
+            Bring Me the Horizon. The album was released on 11 September 2015, and
+            marks a departure from the group's metalcore roots, in favour of a less
+            aggressive alternative rock and metal style. The album debuted at number
+            one in Australia and Canada, as well as number two on the UK Albums Chart
+            and the US Billboard 200. The album received universal acclaim from music
+            critics.
+        geonames:
+          place_name: Sheffield
+          country_code: GB
+          wiki: http://en.wikipedia.org/wiki/Sheffield
+          place: http://sws.geonames.org/3333193/
+          geo_link: http://www.geonames.org/2638077/sheffield.html
+          lat: "53.38361111111111"
+          long: -1.4669444444444444
+          population: "447047"
+    Track:
+      type: object
+      properties:
+        album:
+          type: object
+          properties:
+            album_type:
+              type: string
+            artists:
+              type: array
+              items:
+                type: object
+                properties:
+                  external_urls:
+                    type: object
+                    properties:
+                      spotify:
+                        type: string
+                  href:
+                    type: string
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  type:
+                    type: string
+                  uri:
+                    type: string
+            available_markets:
+              type: array
+              items:
+                type: string
+            external_urls:
+              type: object
+              properties:
+                spotify:
+                  type: string
+            href:
+              type: string
+            id:
+              type: string
+            images:
+              type: array
+              items:
+                type: object
+                properties:
+                  height:
+                    type: integer
+                    format: int32
+                  url:
+                    type: string
+                  width:
+                    type: integer
+                    format: int32
+            name:
+              type: string
+            release_date:
+              type: string
+              format: date
+            release_date_precision:
+              type: string
+            total_tracks:
+              type: integer
+              format: int32
+            type:
+              type: string
+            uri:
+              type: string
+        artists:
+          type: array
+          items:
+            type: object
+            properties:
+              external_urls:
+                type: object
+                properties:
+                  spotify:
+                    type: string
+              href:
+                type: string
+              id:
+                type: string
+              name:
+                type: string
+              type:
+                type: string
+              uri:
+                type: string
+        available_markets:
+          type: array
+          items:
+            type: string
+        disc_number:
+          type: integer
+          format: int32
+        duration_ms:
+          type: integer
+          format: int32
+        explicit:
+          type: boolean
+        external_ids:
+          type: object
+          properties:
+            isrc:
+              type: string
+        external_urls:
+          type: object
+          properties:
+            spotify:
+              type: string
+        href:
+          type: string
+        id:
+          type: string
+        is_local:
+          type: boolean
+        name:
+          type: string
+        popularity:
+          type: integer
+          format: int32
+        preview_url:
+          type: string
+        track_number:
+          type: integer
+          format: int32
+        type:
+          type: string
+        uri:
+          type: string
+        lyrics:
+          type: string
+          format: nullable
+      example:
+        album:
+          album_type: album
+          artists:
+          - external_urls:
+              spotify: https://open.spotify.com/artist/0k17h0D3J5VfsdmQ1iZtE9
+            href: https://api.spotify.com/v1/artists/0k17h0D3J5VfsdmQ1iZtE9
+            id: 0k17h0D3J5VfsdmQ1iZtE9
+            name: Pink Floyd
+            type: artist
+            uri: spotify:artist:0k17h0D3J5VfsdmQ1iZtE9
+          available_markets:
+          - WS
+          - ZA
+          - ZM
+          - ZW
+          external_urls:
+            spotify: https://open.spotify.com/album/0bCAjiUamIFqKJsekOYuRw
+          href: https://api.spotify.com/v1/albums/0bCAjiUamIFqKJsekOYuRw
+          id: 0bCAjiUamIFqKJsekOYuRw
+          images:
+          - height: 640
+            url: https://i.scdn.co/image/ab67616d0000b273d8fa5ac6259dba33127b398a
+            width: 640
+          - height: 300
+            url: https://i.scdn.co/image/ab67616d00001e02d8fa5ac6259dba33127b398a
+            width: 300
+          - height: 64
+            url: https://i.scdn.co/image/ab67616d00004851d8fa5ac6259dba33127b398a
+            width: 64
+          name: Wish You Were Here
+          release_date: 1975-09-12
+          release_date_precision: day
+          total_tracks: 5
+          type: album
+          uri: spotify:album:0bCAjiUamIFqKJsekOYuRw
+        artists:
+        - external_urls:
+            spotify: https://open.spotify.com/artist/0k17h0D3J5VfsdmQ1iZtE9
+          href: https://api.spotify.com/v1/artists/0k17h0D3J5VfsdmQ1iZtE9
+          id: 0k17h0D3J5VfsdmQ1iZtE9
+          name: Pink Floyd
+          type: artist
+          uri: spotify:artist:0k17h0D3J5VfsdmQ1iZtE9
+        available_markets:
+        - US
+        - UY
+        - VC
+        - VN
+        - VU
+        - WS
+        - ZA
+        - ZM
+        - ZW
+        disc_number: 1
+        duration_ms: 334743
+        explicit: false
+        external_ids:
+          isrc: GBN9Y1100088
+        external_urls:
+          spotify: https://open.spotify.com/track/6mFkJmJqdDVQ1REhVfGgd1
+        href: https://api.spotify.com/v1/tracks/6mFkJmJqdDVQ1REhVfGgd1
+        id: 6mFkJmJqdDVQ1REhVfGgd1
+        is_local: false
+        name: Wish You Were Here
+        popularity: 76
+        preview_url: https://p.scdn.co/mp3-preview/7ce0d4e5f0ffcf8fe1a312c9c2f9331c8d2bf994?cid=e25b2446832246d39543fbe99f0c1629
+        track_number: 4
+        type: track
+        uri: spotify:track:6mFkJmJqdDVQ1REhVfGgd1
+        lyrics: None
+    TrackGenius:
+      type: object
+      properties:
+        url:
+          type: string
+        lyrics:
+          type: string
+        annotations:
+          type: object
+          properties:
+            description:
+              type: string
+            producers:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  url:
+                    type: string
+            writers:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  url:
+                    type: string
+            labels:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  url:
+                    type: string
+      example:
+        url: https://genius.com/Pink-floyd-wish-you-were-here-lyrics
+        lyrics: How I wish, how I wish you were here
+        annotations:
+          description: <p>The song reflected the feeling of the band while they were
+            recording the album. Waters felt they were not putting a full effort into
+            the recording sessions.</p>
+          producers:
+          - name: Pink Floyd
+            url: https://genius.com/artists/Pink-floyd
+          writers:
+          - name: David Gilmour
+            url: https://genius.com/artists/David-gilmour
+          - name: Roger Waters
+            url: https://genius.com/artists/Roger-waters
+          labels:
+          - name: Columbia Records
+            url: https://genius.com/artists/Columbia-records
+          - name: Harvest Records
+            url: https://genius.com/artists/Harvest-records
+    TrackSparql:
+      type: object
+      properties:
+        dbpedia:
+          type: object
+          properties:
+            track:
+              type: string
+            track_name:
+              type: string
+            artist:
+              type: string
+            artist_name:
+              type: string
+            wiki:
+              type: string
+            released:
+              type: string
+            hometown:
+              type: string
+            producers:
+              type: array
+              items:
+                type: string
+            writers:
+              type: array
+              items:
+                type: string
+            awards:
+              type: array
+              items:
+                type: string
+            labels:
+              type: array
+              items:
+                type: string
+            genres:
+              type: array
+              items:
+                type: string
+            related_artists:
+              type: array
+              items:
+                type: string
+            abstract:
+              type: string
+        geonames:
+          $ref: '#/components/schemas/GeonamesSparql'
+      example:
+        dbpedia:
+          track: http://dbpedia.org/resource/Drown_(Bring_Me_the_Horizon_song)
+          track_name: Drown
+          artist: http://dbpedia.org/resource/Bring_Me_the_Horizon
+          artist_name: Bring Me the Horizon
+          wiki: http://en.wikipedia.org/wiki/Drown_(Bring_Me_the_Horizon_song)
+          released: 21 October 2014
+          hometown: http://dbpedia.org/resource/Sheffield
+          producers:
+          - Jordan Fish
+          - Oliver Sykes
+          composers: ""
+          writers:
+          - http://dbpedia.org/resource/Oliver_Sykes
+          - Lee Malia
+          - Jordan Fish
+          - Matt Kean
+          - Matt Nicholls
+          awards:
+          - Gold
+          - Silver
+          labels:
+          - http://dbpedia.org/resource/Epitaph_Records
+          - http://dbpedia.org/resource/RCA_Records
+          - http://dbpedia.org/resource/Sony_Music
+          genres:
+          - http://dbpedia.org/resource/Emo
+          - http://dbpedia.org/resource/Pop-punk
+          - pop punk
+          related_artists:
+          - http://dbpedia.org/resource/Dan_Lancaster
+          - http://dbpedia.org/resource/I_Killed_the_Prom_Queen
+          - http://dbpedia.org/resource/Jona_Weinhofen
+          - http://dbpedia.org/resource/Proxies_(band)
+          - http://dbpedia.org/resource/Ted_Jensen
+          - http://dbpedia.org/resource/Zakk_Cervini
+          abstract: '"Drown" is a song by British rock band Bring Me the Horizon released
+            on 21 October 2014. Originally released as a stand-alone single, a remixed
+            version features on the band''s fifth studio album That''s the Spirit
+            and was released as the lead single. The track, musically, marks a shift
+            away from the band''s previously established metalcore sound. Rather,
+            it was described by critics as a pop punk-leaning emo and rock song, being
+            the later showcased as arena rock. It is available to play in the music
+            video game Guitar Hero Live, added on 12 January 2016. It reached No.
+            17 in the UK, becoming the band''s first top-20 single in their home country.'
+        geonames:
+          place_name: Sheffield
+          country_code: GB
+          wiki: http://en.wikipedia.org/wiki/Sheffield
+          place: http://sws.geonames.org/3333193/
+          geo_link: http://www.geonames.org/2638077/sheffield.html
+          lat: "53.38361111111111"
+          long: -1.4669444444444444
+          population: "447047"
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          format: nullable
+        image:
+          type: string
+          format: nullable
+        provider:
+          type: string
+          enum:
+          - google
+          - spotify
+      example:
+        email: pibava3872@advew.com
+        name: Pier Bava
+        provider: spotify
+    UserSpotify:
+      type: object
+      properties:
+        country:
+          type: string
+        display_name:
+          type: string
+        email:
+          type: string
+        explicit_content:
+          type: object
+          properties:
+            filter_enabled:
+              type: boolean
+            filter_locked:
+              type: boolean
+        external_urls:
+          type: object
+          properties:
+            spotify:
+              type: string
+        followers:
+          type: object
+          properties:
+            href:
+              type: string
+            total:
+              type: integer
+              format: int32
+        href:
+          type: string
+        id:
+          type: string
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              height:
+                type: string
+              url:
+                type: string
+              width:
+                type: string
+        product:
+          type: string
+        type:
+          type: string
+        uri:
+          type: string
+      example:
+        country: IT
+        display_name: Pier Bava
+        email: pibava3872@advew.com
+        explicit_content:
+          filter_enabled: false
+          filter_locked: false
+        external_urls:
+          spotify: https://open.spotify.com/user/0f0i7hiuth6l5szikpf52n0dm
+        followers:
+          href: None
+          total: 0
+        href: https://api.spotify.com/v1/users/0f0i7hiuth6l5szikpf52n0dm
+        id: 0f0i7hiuth6l5szikpf52n0dm
+        images: []
+        product: open
+        type: user
+        uri: spotify:user:0f0i7hiuth6l5szikpf52n0dm
+    GeonamesSparql:
+      type: object
+      properties:
+        place:
+          type: string
+        place_name:
+          type: string
+        country_code:
+          type: string
+        postal_code:
+          type: string
+        lat:
+          type: number
+        long:
+          type: number
+        wiki:
+          type: string
+        geo_link:
+          type: string
+        population:
+          type: integer
+  securitySchemes:
+    JWTBearerAuthorization:
+      type: apiKey
+      description: 'JWT Bearer authorization token. Example of a valid value for the
+        "Authorization" header: "Bearer eyJ3eXAiOiAKV1QiLCJhbPgiOiJIVzI1NiJ9"'
+      name: Authorization
+      in: header

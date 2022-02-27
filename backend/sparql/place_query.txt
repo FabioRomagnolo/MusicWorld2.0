@@ -1,0 +1,23 @@
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX gn: <http://www.geonames.org/ontology#>
+
+SELECT DISTINCT ?place ?place_name ?country_code ?postal_code ?lat ?long ?wiki ?geo_link ?population  
+
+WHERE  {
+    ?place owl:sameAs <DBPEDIA_RESOURCE_URI>;
+           rdfs:label ?place_name;
+           geo:lat ?lat;
+           geo:long ?long;
+           gn:locationMap ?geo_link.
+ 
+    OPTIONAL {?place gn:countryCode ?country_code}
+    OPTIONAL {?place gn:population ?population}
+    OPTIONAL {?place gn:postalCode ?postal_code}
+    OPTIONAL {?place gn:wikipediaArticle ?wiki}
+    
+    FILTER(LANG(?place_name)='en')
+    FILTER(REGEX(str(?place), "geonames.org", "i")).
+} 
+LIMIT 1

@@ -1,0 +1,8 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+
+SELECT ?entity ?entity_wiki 
+
+WHERE {
+  VALUES ?entity { DBPEDIA_URLS }
+  ?entity foaf:isPrimaryTopicOf ?entity_wiki.
+}

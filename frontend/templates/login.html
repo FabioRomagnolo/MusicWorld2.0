@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/login.css') }}">
+
+    <!-- Google Auth Library - Sign In With Google -->
+    <meta name="google-signin-client_id" content="{{ google_signin_client_id }}">
+    <meta name="google-signin-scope" content="profile email">
+    <script src="https://apis.google.com/js/api:client.js"></script>
+
+    <!-- Spotify Accounts service -->
+    <meta name="spotify-signin-client_id" content="{{ spotify_signin_client_id }}">
+
+    <title>{{ title }}</title>
+    <meta name="description" content="Login to Music World.">
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="card card-signin flex-row my-5">
+                <div class="card-img-left d-none d-md-flex">
+                    <!-- Background image for card set in CSS! -->
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title text-center">Welcome to Login page!</h4>
+                    <div class="form-signin">
+                        <hr>
+                        <h6 class="card-subtitle text-center">Sign up with Google or Spotify<br>to have full access on Music World.</h6>
+                        <hr>
+                        <!-- Google Login -->
+                        <button id="g-signin2" class="btn btn-lg btn-block text-uppercase btn-google"><i class="fab fa-google mr-2"></i> Login with Google</button>
+
+                        <!-- Spotify Login -->
+                        <button onclick="spotifyLogin();" class="btn btn-lg btn-spotify btn-block text-uppercase" type="submit"><i class="fab fa-spotify mr-2"></i> Login with Spotify</button>
+
+                        {% if error %}
+                            <hr>
+                            <div>
+                                <p style="color:red">{{error}}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Google Login scripts -->
+    <script>
+        var googleSetup = function() {
+            const client_id = document.querySelector('meta[name="google-signin-client_id"]').content;
+            gapi.load('auth2', function(){
+                // Retrieve the singleton for the GoogleAuth library and set up the client.
+                auth2 = gapi.auth2.init({
+                    client_id: client_id,
+                });
+                attachSignin(document.getElementById('g-signin2'));
+            });
+        };
+        function attachSignin(element) {
+            auth2.attachClickHandler(element, {},
+                function (googleUser) {
+                    var profile = googleUser.getBasicProfile();
+                    var name = profile.getName();
+                    // For high res image we modify the Image Url
+                    var imageUrl = profile.getImageUrl().replace("s96-c", "s384-c", true)
+                    var email = profile.getEmail();
+                    console.log('Full Name: ' + name);
+                    console.log("Image URL: " + imageUrl);
+                    console.log("Email: " + email);
+
+                    var id_token = googleUser.getAuthResponse().id_token;
+                    console.log("ID Token: " + id_token);
+
+                    const data = {
+                        provider: "google",
+                        email: email,
+                        name: name,
+                        image: imageUrl,
+                        token: id_token
+                    };
+                    // Showing loading gif
+                    $("body").addClass("loading");
+                    // Sending user's info with a POST request
+                    $.ajax({
+                        type: "POST",
+                        data: JSON.stringify(data),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        url: "{{ url_for('login') }}",
+                        success: function (response) {
+                            console.log(response);
+                            window.location.href = "{{url_for('profile')}}"
+                        },
+                        error: function (err) {
+                            console.log(err);
+                            //window.location.href = "{{url_for('login', error='Can\'t login with the Google account! Maybe you\'ve already registered this email with a Spotify account, but if the problem persists, please contact us.')}}"
+                            window.document.write(err.responseText)
+                        }
+                    });
+                }
+            );
+        }
+    </script>
+    <script>googleSetup();</script>
+
+    <!-- Spotify Login scripts -->
+     <script>
+        function spotifyLogin() {
+            const redirect_uri = window.location.origin + window.location.pathname;
+            const client_id = document.querySelector('meta[name="spotify-signin-client_id"]').content;
+            const scope = "user-read-email user-read-private";
+            console.log('Logging in with Spotify ...');
+            window.location.href = "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_type="+"code&redirect_uri="+redirect_uri+"&scope="+scope+"&state=34fFs29kd09";
+        }
+    </script>
+{% endblock %}

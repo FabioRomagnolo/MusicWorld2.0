@@ -1,0 +1,50 @@
+PREFIX : <http://dbpedia.org/resource/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+
+SELECT ?track ?track_name ?track_wiki ?released
+(GROUP_CONCAT(DISTINCT ?producer; SEPARATOR="\n") AS ?producers)
+(GROUP_CONCAT(DISTINCT ?composer; SEPARATOR="\n") AS ?composers) 
+(GROUP_CONCAT(DISTINCT ?writer; SEPARATOR="\n") AS ?writers) 
+(GROUP_CONCAT(DISTINCT ?award; SEPARATOR="\n") AS ?awards) 
+(GROUP_CONCAT(DISTINCT ?label; SEPARATOR="\n") AS ?labels) 
+(GROUP_CONCAT(DISTINCT ?genre; SEPARATOR="\n") AS ?genres) 
+(GROUP_CONCAT(DISTINCT ?related_artist; SEPARATOR="\n") AS ?related_artists) 
+
+?abstract 
+
+WHERE {
+  {?artist a dbo:Artist} UNION {?artist a dbo:Group} UNION {?artist a dbo:MusicalArtist}
+  ?artist foaf:name ?artist_name.
+
+  OPTIONAL{?album a dbo:MusicalWork}
+  ?album foaf:name ?album_name.
+
+  ?track a dbo:Song;
+            foaf:isPrimaryTopicOf ?track_wiki;
+            dbo:artist ?artist;
+            dbo:album ?album;
+            foaf:name ?track_name;
+            dbo:abstract ?abstract;
+            
+  OPTIONAL {{?track dbo:genre ?genre} UNION {?track dbp:genre ?genre}}
+  OPTIONAL {?track dbp:released ?released}
+  OPTIONAL {{?track dbo:recordLabel ?label} UNION {?track dbo:label ?label}}
+  OPTIONAL {{?track dbo:award ?award} UNION {?track dbp:award ?award}}
+  OPTIONAL {{?track dbo:producer ?producer} UNION {?track dbp:producer ?producer}}
+  OPTIONAL {{?track dbo:composer ?composer} UNION {?track dbp:producer ?producer}}
+  OPTIONAL {{?track dbo:writer ?writer} UNION {?track dbp:writer ?writer}}
+  OPTIONAL {
+          {?artist dbo:associatedMusicalArtist ?related_artist} UNION {?artist dbo:associatedBand ?related_artist} UNION {?related_artist dbo:associatedMusicalArtist ?artist} UNION {?related_artist dbo:associatedBand ?artist}
+  }
+
+  FILTER(LANG(?abstract)='LANGUAGE')
+
+  FILTER NOT EXISTS {?album a dbo:Song}
+
+  FILTER(REGEX(str(?artist_name), "^ARTIST_NAME$", "i"))
+  FILTER(REGEX(str(?track_name), "TRACK_NAME", "i"))
+}
+LIMIT 1

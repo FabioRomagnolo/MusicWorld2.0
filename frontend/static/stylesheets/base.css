@@ -1,0 +1,168 @@
+html {
+    height: 100%;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    background: #f2f6e9;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.navbar {
+    background:#1287C3;
+    width: 100%;
+}
+
+.navbar-brand:hover {
+    color: white;
+}
+.nav-link:hover {
+    color: white;
+}
+
+.nav-link,
+.navbar-brand {
+    color: #fff;
+    cursor: pointer;
+}
+.navbar-brand img {
+    height: 45px;
+    width: auto;
+}
+.nav-link {
+    margin-right: 1em !important;
+}
+
+.navbar-collapse {
+    justify-content: flex-end;
+}
+
+.section-content {
+    min-height: calc(100vh - 343px); !important;
+    /* min-height: 580px; */
+    padding-bottom: 30px;
+}
+
+.search-results p {
+    color: #8b8e93;
+    font-weight: 300;
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 26px;
+}
+
+.favorites-button {
+    padding: 0;
+    border: none;
+    background: none;
+}
+.favorites-button:focus { outline: none; }
+.star {color:gold;}
+
+.btn-primary {background-color: #1287C3 !important;}
+.btn-primary:hover {background-color: #0069d9 !important;}
+.btn-show-more {
+    width: 100%;
+    height: auto;
+}
+
+.page-footer {
+    background-color: #222;
+    color: #ccc;
+    position: relative;
+    padding: 30px;
+    /*border-top: 30px;*/
+    bottom: 0;
+    width: 100%;
+    /*margin-top: 30px;*/
+}
+
+.footer-copyright {
+    color: #666;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.default-cursor {
+    cursor: default;
+}
+
+.td-image {width: 35%;}
+.img-rounded {
+    border-radius: 50%;
+}
+
+.img-full {
+    /*width: auto;*/
+    /*height: 40vh;*/
+    width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+.img-max-full {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.table {margin-bottom: 2rem !important;}
+.table .thead {
+    background-color: #1287C3;
+    border-color: #1287C3;
+    color: white;
+}
+.table .thead th {
+    border-bottom: 0;
+    border-top: 0;
+}
+/* Scrollable table */
+.table-scrollable {
+    max-height: 90vh;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+}
+.table-scrollable-header {margin-bottom: 0 !important;}
+.table-scrollable-body {margin-bottom: 0 !important;}
+
+/* Scrollbar style */
+.scrollbar-style::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+.scrollbar-style::-webkit-scrollbar {
+	width: 12px;
+	background-color: #F5F5F5;
+}
+.scrollbar-style::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #343A40;
+}
+
+/* Display loading for Ajax requests */
+.overlay{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background: rgba(255,255,255,0.8) url("../animations/loading.gif") center no-repeat;
+}
+/* Turn off scrollbar when body element has the loading class */
+body.loading{
+    overflow: hidden;
+}
+/* Make spinner image visible when body element has the loading class */
+body.loading .overlay{
+    display: block;
+}

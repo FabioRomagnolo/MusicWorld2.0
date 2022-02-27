@@ -1,0 +1,33 @@
+runtime: python
+env: flex
+
+# Congifuring WSGI (Web Server Gateway Interface) HTTP Server Gunicorn for efficient Flask's responses
+entrypoint: gunicorn main:app
+
+service: api
+
+env_variables:
+  SPOTIPY_REDIRECT_URI: https://musicworld-2021.appspot.com                   # IMPORTANT!
+  SPOTIPY_LOGIN_REDIRECT_URI: https://musicworld-2021.appspot.com/login       # IMPORTANT!
+  FLASK_SECRET_KEY: ...
+  NEWSAPI_KEY: ...
+  GENIUS_TOKEN: ...
+  SPOTIPY_CLIENT_ID: ...
+  SPOTIPY_CLIENT_SECRET: ...
+
+# Python 3.7.2
+runtime_config:
+  python_version: 3
+
+# Configuring correctly ESP (Extensible Service Proxy) and Cloud Endpoints service
+endpoints_api_service:
+  name: musicworld-2021.appspot.com
+  rollout_strategy: managed
+
+# Reducing costs during testing
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10

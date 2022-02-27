@@ -1,0 +1,242 @@
+{% if dbpedia %}
+    <!-- LOD annotations header -->
+    <div class="lod-colors annotations-header list-group-item list-group-item-action d-flex w-100 active">
+        <a target="_blank" href="https://en.wikipedia.org/wiki/Linked_data"
+           title="What are Linked Open Data?" style="text-decoration: none">
+            <h5 class="mb-1">Linked Open Data annotations</h5>
+        </a>
+        <a class="push-right" target="_blank" href="https://www.dbpedia.org/about/" title="What is DBpedia?">
+            <img class="annotations-image" src="{{ url_for('static', filename='images/sites/DBpedia.png') }}">
+        </a>
+        <a target="_blank" href="https://www.geonames.org/about.html" title="What is Geonames?">
+            <img class="annotations-image" src="{{ url_for('static', filename='images/sites/Geonames.png') }}">
+        </a>
+    </div>
+    <div class="description-content sparql-content shadow">
+        {% block dbpedia %}
+            {% if dbpedia.abstract %}
+                <p>
+                    {% for line in dbpedia.abstract.split('.') %}
+                        {% if loop.last %}
+                            {{line}}
+                        {% else %}
+                            {{ line }}. {% if loop.index % 4 == 0 %}<br><br>{% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </p>
+            {% endif %}
+
+            <!-- The 'specific' blocks are different between artist, album and track!-->
+            {% block dbpedia_specific_head %}
+                {% if dbpedia.aliases %}
+                    <p><strong>Aka</strong>:
+                        {% for alias in dbpedia.aliases %}
+                        {{alias}}{% if not loop.last %}{{', '}}{% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                {% if dbpedia.birth_date %}
+                    <p><strong>Date of birth</strong>: {{ dbpedia.birth_date }}</p>
+                {% endif %}
+                {% if dbpedia.death_date %}
+                    <p><strong>Date of death</strong>: {{ dbpedia.death_date }}</p>
+                {% endif %}
+                {% if dbpedia.start_year %}
+                    <p>
+                    <strong>Years active</strong>: {{ dbpedia.start_year }} -
+                    {% if dbpedia.end_year %}{{ dbpedia.end_year }}{% else %}present{% endif %}
+                    </p>
+                {% endif %}
+
+                {% if dbpedia.released %}
+                    <p><strong>Released on </strong> {{ dbpedia.released }}</p>
+                {% endif %}
+                {% if dbpedia.producers %}
+                    <p><strong>Produced by </strong>
+                        {% for producer in dbpedia.producers %}
+                            {% if producer.startswith('http://') or producer.startswith('https://') %}
+                                <a target="_blank" href="{{ producer }}">{{producer.rpartition('/')[-1] | replace("_", " ") }}</a>{% if not loop.last %}{{', '}}{% endif %}
+                            {% else %}
+                                {{ producer }}{% if not loop.last %}{{', '}}{% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                {% if dbpedia.writers %}
+                    <p><strong>Written by </strong>
+                        {% for writer in dbpedia.writers %}
+                            {% if writer.startswith('http://') or writer.startswith('https://') %}
+                                <a target="_blank" href="{{ writer }}">{{writer.rpartition('/')[-1] | replace("_", " ") }}</a>{% if not loop.last %}{{', '}}{% endif %}
+                            {% else %}
+                                {{ writer }}{% if not loop.last %}{{', '}}{% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                {% if dbpedia.awards %}
+                    <p><strong>Awards</strong>:
+                        {% for award in dbpedia.awards %}
+                            {% if award.startswith('http://') or award.startswith('https://') %}
+                                <a target="_blank" href="{{ award }}">{{award.rpartition('/')[-1] | replace("_", " ") }}</a>{% if not loop.last %}{{', '}}{% endif %}
+                            {% else %}
+                                {{ award }}{% if not loop.last %}{{', '}}{% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+
+            {% endblock dbpedia_specific_head %}
+
+            {% if dbpedia.genres %}
+                 <p><strong>Genre</strong>:
+                    {% for genre in dbpedia.genres %}
+                        {% if genre.startswith('http://') or genre.startswith('https://') %}
+                            <a target="_blank" href="{{ genre }}">{{genre.rpartition('/')[-1] | replace("_", " ") }}</a>{% if not loop.last %}{{', '}}{% endif %}
+                        {% else %}
+                            {{ genre }}{% if not loop.last %}{{', '}}{% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </p>
+            {% endif %}
+            {% if dbpedia.labels %}
+                <p><strong>Owned by </strong>
+                    {% for label in dbpedia.labels %}
+                    <a target="_blank" href="{{ label }}">{{ label.rpartition('/')[-1] | replace("_", " ") }}</a>{% if not loop.last %}{{', '}}{% endif %}
+                    {% endfor %}
+                </p>
+            {% endif %}
+
+            {% block dbpedia_specific_tail %}
+                {% if dbpedia.plays_in %}
+                    <p><strong>Played in</strong>:
+                        {% for film in dbpedia.plays_in %}
+                            {% if film.startswith('http://') or film.startswith('https://') %}
+                                <a target="_blank" href="{{ film }}">{{ film.rpartition('/')[-1] | replace("_", " ") }}</a>{% if not loop.last %}{{', '}}{% endif %}
+                            {% else %}
+                                {{ film }}{% if not loop.last %}{{', '}}{% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                {% if dbpedia.actual_members %}
+                    <p><strong>Current members</strong><br>
+                        {% for member in dbpedia.actual_members %}
+                            {% if member.startswith('http://') or member.startswith('https://') %}
+                                <a target="_blank" href="{{ member }}">{{ member.rpartition('/')[-1] | replace("_", " ") }}</a>{% if not loop.last %}{{', '}}{% endif %}
+                            {% else %}
+                                {{ member }}{% if not loop.last %}{{', '}}{% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                {% if dbpedia.old_members %}
+                    <p><strong>Past members</strong><br>
+                        {% for member in dbpedia.old_members %}
+                            {% if member.startswith('http://') or member.startswith('https://') %}
+                                <a target="_blank" href="{{ member }}">{{ member.rpartition('/')[-1] | replace("_", " ") }}</a>{% if not loop.last %}{{', '}}{% endif %}
+                            {% else %}
+                                {{ member }}{% if not loop.last %}{{', '}}{% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            {% endblock dbpedia_specific_tail %}
+
+            {% if dbpedia.related_artists %}
+                <p><strong>Related artists</strong> you may like</p>
+                <p>
+                    {% for artist in dbpedia.related_artists %}
+                    <a target="_blank" href="{{ artist }}">{{ artist.rpartition('/')[-1] | replace("_", " ") }}</a>{% if not loop.last %}{{', '}}{% endif %}
+                    {% endfor %}
+                </p>
+            {% endif %}
+            {% if dbpedia.wiki %}
+                <p><strong>See more on
+                    <a target="_blank" href="{{ dbpedia.wiki }}">Wikipedia</a>!
+                </strong></p>
+            {% endif %}
+
+            <div id="geonames">
+            {% if geonames %}
+                <!-- Leaflet interactive map -->
+                <div id="map" class="map"></div>
+                <script>
+                    // Variables from flask environment
+                    var geonames = JSON.parse('{{ geonames|tojson }}')
+                    var geo_coordinates = [geonames.lat, geonames.long];
+                    var artist_name = '{{ dbpedia.artist_name }}'
+
+                    // Creating map
+                    var element = document.getElementById('map');
+                    var map = L.map('map', {
+                        maxZoom: 19,
+                        minZoom: 2})
+                        .setView(geo_coordinates, 4);
+                    // Calculate the offset and move view
+                    var offset = map.getSize().x*0.20;
+                    map.panBy(new L.Point(offset, 0), {animate: false});
+                    // OpenStreetMap tile layer for provider's attribution
+                    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                        subdomains: ['a','b','c']
+                    }).addTo(map);
+                    // Adding marker
+                    var marker = L.marker(geo_coordinates).addTo(map);
+                    // Adding infobox
+                    var info = L.control();
+                    info.onAdd = function (map) {
+                        this._div = L.DomUtil.create('div', 'map_infobox');
+                        this.update(artist_name, geonames);
+                        return this._div;
+                    };
+                    info.update = function (artist_name, geonames) {
+                        var city_name = '<h4><b>'+artist_name+'\'s hometown</b></h4><p>'+
+                            '<b>'+geonames.place_name+'</b>';
+                        if ('country_code' in geonames) {
+                            city_name += ' ('+geonames.country_code+')';
+                        }
+                        city_name += '</p>';
+                        this._div.innerHTML += city_name;
+                        if ('population' in geonames) {
+                            // Formatting big numbers
+                            geonames.population = geonames.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                            this._div.innerHTML += '<p>Population: '+geonames.population+'</p>';
+                        }
+                        if ('postal_code' in geonames) {
+                            this._div.innerHTML += '<p>Postal code: '+geonames.postal_code+'</p>';
+                        }
+                        if ('wiki' in geonames) {
+                            this._div.innerHTML += '<p><b>See more on '+
+                                '<a target="_blank" href="'+geonames.geo_link+'">Geonames</a></b>'+
+                                ' or <b><a target="_blank" href="'+geonames.wiki+'">Wikipedia!</a></b></p>';
+                        } else{
+                            this._div.innerHTML += '<p><b>See more on '+
+                                '<a target="_blank" href="'+geonames.geo_link+'">Geonames!</a></b></p>';
+                        }
+                    };
+                    info.addTo(map);
+                </script>
+                <!-- End of OpenStreetMap -->
+            {% endif %}
+            </div>
+        {% endblock %}
+    </div>
+    <!-- Show more sparql button -->
+    <button type="button" class="lod-colors btn-show-more btn-show-more-sparql shadow btn btn-md"></button>
+    <script>
+        $('button.btn-show-more-sparql').text("Show more annotations");
+
+        $('button.btn-show-more-sparql').on('click', function() {
+            $(".description .sparql-content").addClass("expand");
+            $(".description .sparql-content").addClass("table-scrollable");
+            $(".description .sparql-content").addClass("scrollbar-style");
+            $('button.btn-show-more-sparql').hide();
+        });
+    </script>
+    <!-- End of show more description button -->
+    <br> <br>
+{% else %}
+    <div id="lod_not_found">
+        <h6>Sorry, we can't find the Linked Open Data annotations about this entity! &#128532;</h6>
+    </div>
+{% endif %}

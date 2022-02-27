@@ -1,0 +1,17 @@
+.idea
+Env_variables-Backend.txt
+Env_variables-Frontend.txt
+Env_variables-Functions.txt
+
+backend/.google_application_credentials.json
+backend/.gcloudignore
+backend/tmp/.cache
+backend/__pycache__
+backend/flexenv.yaml
+backend/app.yaml
+
+frontend/app.yaml
+frontend/.gcloudignore
+frontend/__pycache__
+
+/lod_analysis/tmp/.cache

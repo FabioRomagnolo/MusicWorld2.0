@@ -1,0 +1,6 @@
+dispatch:
+  #- url: "musicworld-2022.appspot.com/"
+  - url: "music-world.it/"
+    service: default
+  - url: "*/api/*"
+    service: api

@@ -1,0 +1,38 @@
+PREFIX : <http://dbpedia.org/resource/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+
+SELECT ?artist ?artist_name ?artist_wiki ?hometown ?birth_date
+(GROUP_CONCAT(DISTINCT ?alias; SEPARATOR="\n") AS ?aliases)
+(GROUP_CONCAT(DISTINCT ?label; SEPARATOR="\n") AS ?labels) 
+(GROUP_CONCAT(DISTINCT ?plays_in; SEPARATOR="\n") AS ?plays_in) 
+(GROUP_CONCAT(DISTINCT ?genre; SEPARATOR="\n") AS ?genres) 
+(GROUP_CONCAT(DISTINCT ?related_artist; SEPARATOR="\n") AS ?related_artists) 
+(GROUP_CONCAT(DISTINCT ?actual_member; SEPARATOR="\n") AS ?actual_members)  
+(GROUP_CONCAT(DISTINCT ?old_member; SEPARATOR="\n") AS ?old_members)
+
+?abstract 
+
+WHERE {
+  {?artist a dbo:Artist} UNION {?artist a dbo:Group} UNION {?artist a dbo:MusicalArtist}
+  ?artist foaf:isPrimaryTopicOf ?artist_wiki;
+            foaf:name ?artist_name;
+            dbo:abstract ?abstract.
+
+  OPTIONAL {{?artist dbo:genre ?genre} UNION {?artist dbp:genre ?genre}}
+  OPTIONAL {?artist dbo:alias ?alias}
+  OPTIONAL {?artist dbo:hometown ?hometown}
+  OPTIONAL {?artist dbo:birthDate ?birth_date}
+  OPTIONAL {{?artist dbo:recordLabel ?label} UNION {?artist dbo:label ?label}}
+  OPTIONAL {{?plays_in dbo:musicComposer ?artist} UNION {?play_in dbp:music ?artist}}
+  OPTIONAL {
+         {?artist dbo:associatedMusicalArtist ?related_artist} UNION {?artist dbo:associatedBand ?related_artist} UNION {?related_artist dbo:associatedMusicalArtist ?artist} UNION {?related_artist dbo:associatedBand ?artist}
+  }
+  OPTIONAL {{?artist dbo:formerBandMember ?old_member} UNION {?artist dbp:pastMembers ?old_member}}
+  OPTIONAL {{?artist dbo:bandMember ?actual_member} UNION {?artist dbp:currentMembers ?actual_member}}
+
+  FILTER(LANG(?abstract)='LANGUAGE')
+  FILTER(REGEX(str(?artist_name), "^ARTIST_NAME$", "i")).
+}
+LIMIT 1
