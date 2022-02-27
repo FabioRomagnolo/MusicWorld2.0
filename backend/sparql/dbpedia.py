@@ -37,15 +37,16 @@ class Dbpedia(object):
 
         try:
             results = self.sparql.queryAndConvert()
-        except Exception:
+        except Exception as e1:
+            print(e1)
             print("WARNING! An HTTP error occured. Sleeping and retrying request ...")
             # Sleeping a little and retrying ...
-            time.sleep(2)
+            time.sleep(5)
             try:
                 results = self.sparql.queryAndConvert()
-            except Exception as e:
-                print(e)
-                return [{}]
+            except Exception as e2:
+                print(e2)
+                return []
 
         for result in results["results"]["bindings"]:
             if self.verbose:
