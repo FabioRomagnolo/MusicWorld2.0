@@ -47,14 +47,14 @@ class Download(object):
         artists = remove_duplicated_dictionaries_from_list(artists)
 
         if max_tracks:
-            # tracks = random.sample(tracks, max_tracks)
-            tracks = tracks[:max_tracks]
+            tracks = random.sample(tracks, max_tracks)
+            # tracks = tracks[:max_tracks]
         if max_albums:
-            # albums = random.sample(albums, max_albums)
-            albums = albums[:max_albums]
+            albums = random.sample(albums, max_albums)
+            # albums = albums[:max_albums]
         if max_artists:
-            # artists = random.sample(artists, max_artists)
-            artists = artists[:max_artists]
+            artists = random.sample(artists, max_artists)
+            # artists = artists[:max_artists]
 
         return_value = {
             'artists': artists,
@@ -65,8 +65,8 @@ class Download(object):
 
     def download_data(self, data, get_full_info=False, verbose=True):
         # DOWNLOAD ARTISTS DATA
-        # data['artists'] = self.download_artists(data['artists'], get_full_info=get_full_info, verbose=verbose)
-        # save_excel(data['artists'], filename='artists', get_full_info=get_full_info, verbose=verbose)
+        data['artists'] = self.download_artists(data['artists'], get_full_info=get_full_info, verbose=verbose)
+        save_excel(data['artists'], filename='artists', get_full_info=get_full_info, verbose=verbose)
         if verbose:
             print("----------- ARTISTS DOWNLOAD COMPLETED SUCCESSFULLY! -----------")
 
