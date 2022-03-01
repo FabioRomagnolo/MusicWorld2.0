@@ -9,11 +9,11 @@ def simplify_research(query):
     # Removing featuring patterns
     query = re.sub(r'\(?(feat\.|featuring|with) (.*)\)?', "", query)
     # Removing 'Remastered - year' pattern
-    query = re.sub(r'\(?(remastered|remaster)( -)*? [0-9]*\)?', "", query)
-    query = re.sub(r'\(?[0-9]*( -)*? (remastered|remaster)\)?', "", query)
+    query = re.sub(r'\(?(remastered|remaster)( - )*?[0-9]*?\)?', "", query)
+    query = re.sub(r'\(?[0-9]*?( - )*?(remastered|remaster)\)?', "", query)
     # Removing 'Remix - year' pattern
-    query = re.sub(r'\(?(remixed|remix)( -)*? [0-9]*\)?', "", query)
-    query = re.sub(r'\(?[0-9]*( -)*? (remixed|remix)\)?', "", query)
+    query = re.sub(r'\(?(remixed|remix)( - )*?[0-9]*\)?', "", query)
+    query = re.sub(r'\(?[0-9]*?( - )*?(remixed|remix)\)?', "", query)
     # Removing 'ARTIST Cover pattern'
     query = re.sub(r'-(.*?)cover', "", query)
     # Removing 'From the "FILM" soundtrack' and similar patterns
