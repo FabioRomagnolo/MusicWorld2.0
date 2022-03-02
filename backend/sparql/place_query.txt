@@ -3,7 +3,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX gn: <http://www.geonames.org/ontology#>
 
-SELECT DISTINCT ?place ?place_name ?country_code ?postal_code ?lat ?long ?wiki ?geo_link ?population  
+SELECT DISTINCT ?place ?place_name ?lat ?long ?country_code ?postal_code ?population ?wiki ?geo_link   
 
 WHERE  {
     ?place owl:sameAs <DBPEDIA_RESOURCE_URI>;
