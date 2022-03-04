@@ -2,7 +2,7 @@ from utils.download import Download
 from utils.evaluate import *
 
 # Set the follow variables to execute specific actions only
-ALLOW_DOWNLOAD = False
+ALLOW_DOWNLOAD = True
 ALLOW_EVALUATE = True
 
 # Set the playlist ID from which download data
@@ -20,7 +20,7 @@ MAX_ALBUMS = 100
 MAX_ARTISTS = 100
 
 # ATTENTION! Setting this true will slow down the sparql queries!
-GET_FULL_INFO = True
+GET_FULL_INFO = False
 
 VERBOSE = True
 

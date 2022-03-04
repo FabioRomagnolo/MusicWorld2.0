@@ -18,10 +18,10 @@ def clean_genius_lyrics(title, lyrics):
 
 
 def verify_result(query, result, exact_match=False):
+    query, result = query.lower(), result.lower()
     if exact_match:
         return query == result
     else:
-        query, result = query.lower(), result.lower()
         if result.find('New Music Friday') != -1:
             return False
         for word in re.findall(r'\w+', query):
@@ -61,7 +61,7 @@ class Genius(object):
             if len(hits) == 0:
                 return None
             else:
-                # Let's take before the first most popular result and verify
+                # Let's take before the first result and verify
                 searched_artist = hits[0]['result']
                 if not searched_artist or verify_result(artist_name, searched_artist['name']) is False:
                     # Let's try with exact match if there are more possible results
@@ -104,7 +104,7 @@ class Genius(object):
             album_name = simplify_research(album_name)
             artist_name = simplify_research(artist_name)
             research = self.genius.search_albums(
-                search_term=f"{album_name} {artist_name}", per_page=1, page=1
+                search_term=f"{album_name} {artist_name}", per_page=20, page=1
             )
             sections = research.get('sections', None)
             if sections is None:
@@ -114,10 +114,23 @@ class Genius(object):
             if len(hits) == 0:
                 return None
             else:
+                # Let's take before the first result and verify
                 searched_album = hits[0]['result']
-                if not searched_album or verify_result(album_name, searched_album['name']) is False\
-                        or verify_result(artist_name, searched_album['artist']['name']) is False:
-                    return None
+                searched_artist = searched_album['artist']
+                if not searched_album or verify_result(artist_name, searched_artist['name']) is False \
+                        or verify_result(album_name, searched_album['name']) is False:
+                    # Let's try with exact match if there are more possible results
+                    for hit in hits:
+                        possible_album = hit['result']
+                        possible_artist = possible_album['artist']
+                        if verify_result(album_name, possible_album['name'], exact_match=True) \
+                                and verify_result(artist_name, possible_artist['name'], exact_match=True):
+                            searched_album = possible_album
+                            searched_artist = possible_artist
+                            break
+            if not searched_album or verify_result(artist_name, searched_artist['name']) is False \
+                    or verify_result(album_name, searched_album['name']) is False:
+                return None
             album = self.genius.album(album_id=searched_album['id'])
 
             # Get Genius URL
@@ -163,7 +176,7 @@ class Genius(object):
             track_name = simplify_research(track_name)
             artist_name = simplify_research(artist_name)
             research = self.genius.search_songs(
-                search_term=f"{track_name} {artist_name}", per_page=1, page=1
+                search_term=f"{track_name} {artist_name}", per_page=20, page=1
             )
             sections = research.get('sections', None)
             if sections is None:
@@ -173,10 +186,23 @@ class Genius(object):
             if len(hits) == 0:
                 return None
             else:
+                # Let's take before the first result and verify
                 searched_track = hits[0]['result']
-                if not searched_track or verify_result(track_name, searched_track['title']) is False \
-                        or verify_result(artist_name, searched_track['primary_artist']['name']) is False:
-                    return None
+                searched_artist = searched_track['primary_artist']
+                if not searched_track or verify_result(artist_name, searched_artist['name']) is False \
+                        or verify_result(track_name, searched_track['title']) is False:
+                    # Let's try with exact match if there are more possible results
+                    for hit in hits:
+                        possible_track = hit['result']
+                        possible_artist = possible_track['primary_artist']
+                        if verify_result(track_name, possible_track['title'], exact_match=True)\
+                                and verify_result(artist_name, possible_artist['name'], exact_match=True):
+                            searched_track = possible_track
+                            searched_artist = possible_artist
+                            break
+            if not searched_track or verify_result(artist_name, searched_artist['name']) is False \
+                    or verify_result(track_name, searched_track['title']) is False:
+                return None
             track = self.genius.song(searched_track['id'])
             # Get Genius URL
             url = track['song']['url']

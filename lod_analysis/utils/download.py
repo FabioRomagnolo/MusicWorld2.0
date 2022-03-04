@@ -21,7 +21,8 @@ class Download(object):
                                             max_artists=None, max_albums=None, max_tracks=None):
         if verbose:
             if max_tracks:
-                print(f"Getting MAXIMUM {max_tracks} tracks from playlist with PLAYLIST ID {playlist_id}")
+                print(f"Getting MAXIMUM {max_artists} artists, {max_albums} albums, {max_tracks} tracks "
+                      f"from playlist with PLAYLIST ID {playlist_id}")
             else:
                 print(f"Getting ALL tracks from playlist with PLAYLIST ID {playlist_id}")
         results = self.spotify.get_playlist_tracks(playlist_id=playlist_id)

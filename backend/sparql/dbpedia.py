@@ -39,7 +39,7 @@ class Dbpedia(object):
             results = self.sparql.queryAndConvert()
         except Exception as e1:
             print(e1)
-            seconds_sleep = 10
+            seconds_sleep = 2
             print(f"WARNING! An HTTP error occured. Sleeping {seconds_sleep} seconds and retrying request ...")
             # Sleeping a little and retrying ...
             time.sleep(seconds_sleep)
