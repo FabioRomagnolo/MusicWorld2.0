@@ -40,9 +40,9 @@ body {
 }
 
 .section-content {
-    min-height: calc(100vh - 343px); !important;
+    min-height: calc(100vh - 373px); !important;
     /* min-height: 580px; */
-    padding-bottom: 30px;
+    /* padding-bottom: 30px; */
 }
 
 .search-results p {
@@ -73,10 +73,9 @@ body {
     color: #ccc;
     position: relative;
     padding: 30px;
-    /*border-top: 30px;*/
     bottom: 0;
     width: 100%;
-    /*margin-top: 30px;*/
+    margin-top: 30px !important;
 }
 
 .footer-copyright {

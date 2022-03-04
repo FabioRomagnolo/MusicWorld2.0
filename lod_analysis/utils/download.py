@@ -14,8 +14,8 @@ class Download(object):
 
         self.spotify = Spotify()
         self.genius = Genius(verbose=False)
-        self.dbpedia = Dbpedia(verbose=False, query_directory=os.path.join('..', 'backend', 'sparql'))
-        self.geonames = Geonames(verbose=False, query_directory=os.path.join('..', 'backend', 'sparql'))
+        self.dbpedia = Dbpedia(verbose=False, query_directory=os.path.join('../../frontend', 'backend', 'sparql'))
+        self.geonames = Geonames(verbose=False, query_directory=os.path.join('../../frontend', 'backend', 'sparql'))
 
     def download_spotify_data_from_playlist(self, playlist_id, verbose=True,
                                             max_artists=None, max_albums=None, max_tracks=None):

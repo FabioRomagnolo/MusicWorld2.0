@@ -14,6 +14,13 @@ def get_links(artist_name, track_name):
         'description': 'Check tabs, chords and more.'
     }
     links.append(ug)
+    # YouTube
+    youtube = {
+        'title': 'YouTube',
+        'url': f'https://www.youtube.com/results?search_query={query}%20tutorial',
+        'description': 'Check video tutorials on YouTube.'
+    }
+    links.append(youtube)
     # Songsterr
     songsterr = {
         'title': 'Songsterr',
@@ -28,12 +35,5 @@ def get_links(artist_name, track_name):
         'description': 'Check piano scores.'
     }
     links.append(musescore)
-    # YouTube
-    youtube = {
-        'title': 'YouTube',
-        'url': f'https://www.youtube.com/results?search_query={query}%20tutorial',
-        'description': 'Check video tutorials on YouTube.'
-    }
-    links.append(youtube)
 
     return links

@@ -117,7 +117,9 @@
                                     Show more links
                                 </button>
                                 <script>
-                                    $('a.links-row:gt(0)').hide();
+                                    // Change the following number to 0 to have other links hidden and show more button!
+                                    let max_initial_links_visible = 1;
+                                    $('a.links-row:gt('+max_initial_links_visible+')').hide();
                                     var links_visible = $('a.links-row:visible').length;
                                     var links_hidden = $('a.links-row:hidden').length;
                                     console.log("N. of links visible: "+links_visible)
@@ -380,13 +382,7 @@
                 desktop_design();
           }
         }
-
         control_size_and_design();
-
-        /* On resizing control the design
-        $( window ).resize(function() {
-          control_size_and_design();
-        });*/
     </script>
     <!-- End of script for alternative design on MOBILE DEVICES
 {% endblock scripts %}

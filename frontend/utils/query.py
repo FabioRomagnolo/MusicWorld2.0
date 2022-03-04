@@ -9,8 +9,8 @@ def simplify_research(query):
     # Removing patterns in ' - ...' or ' ...(end of string)' or '(...)
     regex_patterns = [
         r'(feat\.|featuring|with)', r'(remastered|remaster)',
-        r'(remixed|remix)', r'cover', r'from', r'instrumental',
-        r'demo', r'version', 'radio', r'(edition|edit)',
+        r'(remixed|remix|mix)', r'cover', r'from', r'instrumental',
+        r'demo', r'version', r'(edition|edit)',
         r'deluxe', r'expanded', r'ep', r'[0-9]*th anniversary',
         r'live', r'acoustic'
     ]
