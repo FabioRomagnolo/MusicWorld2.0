@@ -20,7 +20,7 @@ app.secret_key = os.environ['FLASK_SECRET_KEY']
 # Adding jinja2 extensions
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 
-api = Api(verbose=True)
+api = Api(verbose=False)
 
 
 @app.template_filter('strftime')

@@ -7,17 +7,25 @@ def simplify_research(query):
     query = re.sub(r"\[(.*)\]", "", query)
 
     # Removing patterns in ' - ...' or ' ...(end of string)' or '(...)
-    regex_patterns = [
+    general_regex_patterns = [
         r'(feat\.|featuring|with)', r'(remastered|remaster)',
         r'(remixed|remix|mix)', r'cover', r'from', r'instrumental',
         r'demo', r'version', r'(edition|edit)',
         r'deluxe', r'expanded', r'ep', r'[0-9]*th anniversary',
         r'live', r'acoustic'
     ]
-    for r in regex_patterns:
+    for r in general_regex_patterns:
         query = re.sub(r'\((.*){0}(.*)\)'.format(r), "", query)
         query = re.sub(r' -(.*){0}(.*)'.format(r), "", query)
         query = re.sub(r'( {0}(.*))$'.format(r), "", query)
+
+    # Removing more specific patterns in ' - ...' or ' or '(...)
+    specific_regex_patterns = [
+        r'radio', r'[0-9]+',
+    ]
+    for r in specific_regex_patterns:
+        query = re.sub(r'\((.*){0}(.*)\)'.format(r), "", query)
+        query = re.sub(r' -(.*){0}(.*)'.format(r), "", query)
 
     # Removing particular words and chars
     to_replace = ['"', ]
