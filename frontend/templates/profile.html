@@ -146,7 +146,9 @@
 
         function spotifyLogout() {
             // Spotify logout
-            var spotify_logout = window.open("https://accounts.spotify.com/logout", 'Logging out from Spotify...');
+            var spotify_logout = window.open("https://accounts.spotify.com/logout", 'Logging out from Spotify...',
+                "status=yes,toolbar=no,scrollbars=yes,menubar=no,location=no");
+            //var spotify_logout = window.open("https://accounts.spotify.com/logout", 'Logging out from Spotify...');
             setTimeout(function(){
                 spotify_logout.close();
             },1000);
