@@ -115,5 +115,31 @@
             console.log('Logging in with Spotify ...');
             window.location.href = "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_type="+"code&redirect_uri="+redirect_uri+"&scope="+scope+"&state=34fFs29kd09";
         }
+        function spotifyLogout() {
+            // Spotify logout
+            //var spotify_logout = window.open("https://accounts.spotify.com/logout", 'Logging out from Spotify...',
+            //    "status=yes,toolbar=no,scrollbars=yes,menubar=no,location=no");
+            var spotify_logout = window.open("https://accounts.spotify.com/logout", 'Logging out from Spotify...');
+            setTimeout(function(){
+                spotify_logout.close();
+            },1000);
+        }
     </script>
+
+    <!-- Spotify error popup -->
+    {% if spotify_error %}
+        <script>
+        console.log("- Spotify login error occured!")
+            function spotifyError() {
+                swal({
+                    icon: 'error',
+                    title: "Can't login with Spotify!",
+                    text: "Music World is still in development mode, so to approve your access we need you to send us your " +
+                          "email to any of our addresses down in the contact section.",
+                })
+            }
+            spotifyError();
+            spotifyLogout();
+        </script>
+    {% endif %}
 {% endblock %}

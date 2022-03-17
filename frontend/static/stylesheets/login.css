@@ -17,13 +17,14 @@
 }
 
 .card-signin .card-img-left {
-  width: 45%;
+  width: 100%;
   background: scroll center url('/static/images/MW_logos/1.png');
   /* background: scroll center url('https://source.unsplash.com/WEQbe2jBg40/414x512'); */
   background-size: cover;
 }
 
 .card-signin .card-body {
+  width: 100%;
   padding: 2rem;
 }
 

@@ -7,9 +7,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/common.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/login.css') }}">
 
-    <!-- Sweet Alert library for confirm javascript pop-up -->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
     <!-- Google Auth Library - Sign In With Google -->
     <meta name="google-signin-client_id" content="{{google_signin_client_id}}">
     <script src="https://apis.google.com/js/api:client.js"></script>
@@ -123,19 +120,6 @@
 
     <!-- Logout scripts -->
     <script>
-        var googleSetup = function() {
-            const client_id = document.querySelector('meta[name="google-signin-client_id"]').content;
-            gapi.load('auth2', function(){
-                // Retrieve the singleton for the GoogleAuth library and set up the client.
-                auth2 = gapi.auth2.init({
-                    client_id: client_id,
-                });
-            });
-        };
-    </script>
-    <script>googleSetup();</script>
-
-    <script>
         function googleLogout() {
             // Google logout
             const client_id = document.querySelector('meta[name="google-signin-client_id"]').content;
@@ -162,12 +146,10 @@
 
         function spotifyLogout() {
             // Spotify logout
-            var spotify_logout = window.open("https://accounts.spotify.com/logout", 'Logging out from Spotify...',
-                "status=yes,toolbar=no,scrollbars=yes,menubar=no,location=no");
+            var spotify_logout = window.open("https://accounts.spotify.com/logout", 'Logging out from Spotify...');
             setTimeout(function(){
                 spotify_logout.close();
-            },3000);
-            this.window.focus();
+            },1000);
 
             flaskLogout();
 

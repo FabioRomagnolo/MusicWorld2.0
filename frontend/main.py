@@ -390,6 +390,8 @@ def login():
                 user_db = user.get()
                 if user_db is not None:
                     session['user'] = user_db
+                    # Refreshing image to display (The spotify URL image in DB tends to expire)
+                    session['user']['image'] = image
                     print(f"--- Login successful with Spotify account: {email}")
                     return redirect(url_for('profile'))
                 else:
@@ -400,8 +402,8 @@ def login():
 
             except Exception as e:
                 error = "Can't login with the Spotify account! Maybe there's a connection issue with Spotify, but " \
-                        "if the problem persists, please contact us."
-                context.update({'error': error})
+                                "if the problem persists, please contact us."
+                context.update({'error': error, 'spotify_error': True})
                 print(e)
                 print(error)
 
