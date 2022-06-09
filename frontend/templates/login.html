@@ -51,10 +51,20 @@
     <script>
         var googleSetup = function() {
             const client_id = document.querySelector('meta[name="google-signin-client_id"]').content;
-            gapi.load('auth2', function(){
+            /*
+            gapi.load('auth2', function(){  // WARNING! Now it's deprecated.
                 // Retrieve the singleton for the GoogleAuth library and set up the client.
                 auth2 = gapi.auth2.init({
                     client_id: client_id,
+                });
+                attachSignin(document.getElementById('g-signin2'));
+            });
+            */
+            gapi.load('client:auth2', function(){
+                // Retrieve the singleton for the GoogleAuth library and set up the client.
+                auth2 = gapi.auth2.init({
+                    client_id: client_id,
+                    plugin_name: "chat"
                 });
                 attachSignin(document.getElementById('g-signin2'));
             });
